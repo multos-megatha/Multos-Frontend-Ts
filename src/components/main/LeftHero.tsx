@@ -4,9 +4,12 @@ import { User, X } from 'lucide-react'
 import React from 'react'
 import { keyFeatures, wallets } from '@/constants'
 import { useState } from 'react'
+import { useWallet } from '@aptos-labs/wallet-adapter-react'
 
 const LeftHero = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { connect, disconnect, connected, account, wallets } = useWallet();
+
 
 
     return (
@@ -57,13 +60,31 @@ const LeftHero = () => {
                 {/* Button */}
                 <div className='flex flex-col items-center justify-center mt-6 md:mt-9 gap-3 w-full md:mb-9'>
 
-                    <button className='w-full lg:max-w-[450px] group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'>
+                    {wallets.filter((wallet) => wallet.name === "Continue with Google").map((wallet) => (
+                        <button
+                            key={wallet.name}
+                            onClick={() => connect(wallet.name)}
+                            className="w-full lg:max-w-[450px] group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        >
+                            {/* hover overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                            {/* content */}
+                            <div className="relative flex items-center justify-center space-x-3">
+                                <User className="w-5 h-5" />
+
+                                <span>Continue with Google</span>
+                            </div>
+                        </button>
+                    ))}
+
+                    {/* <button className='w-full lg:max-w-[450px] group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'>
                         <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div className="relative flex items-center justify-center space-x-3">
                             <User className="w-5 h-5" />
                             <span>Continue with Google</span>
                         </div>
-                    </button>
+                    </button> */}
 
                     <button onClick={() => setIsOpen(true)} className='w-full lg:max-w-[450px] group bg-white border-2 border-gray-200 text-gray-800 font-bold py-4 px-8 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-red-300 hover:bg-gray-50'>
                         <div className="flex items-center justify-center space-x-3">
@@ -125,9 +146,10 @@ const LeftHero = () => {
                 </div>
             </div>
 
+            {/* Popup Modal */}
             {isOpen && (
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
-                    <div className='bg-white rounded-2xl shadow-2xl w-full max-w-xs max-h-[90vh] overflow-y-auto'>
+                    <div className='bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden'>
                         {/* Header */}
                         <div className="border-b border-gray-100 text-start px-6 pt-6 pb-3">
                             <div className="flex items-center justify-between">
@@ -147,27 +169,37 @@ const LeftHero = () => {
                         </div>
 
                         {/* Wallets */}
-                        <div className='p-2'>
-                            {wallets.map((wallet, index) => (
-                                <button key={wallet.id} className="w-full flex items-center px-4 py-2 hover:bg-gray-50 rounded-xl transition-colors group">
-                                    <img src={wallet.icon} alt={wallet.name} />
-                                    <span className="ml-3 font-medium text-gray-900 group-hover:text-gray-700">
-                                        {wallet.name} Wallet
-                                    </span>
-                                </button>
-                            ))}
+                        <div className='p-4 max-h-[300px] overflow-y-auto space-y-2 '>
+                            {wallets
+                                .filter((wallet) => wallet.name !== "Continue with Google")
+                                .map((wallet) => (
+                                    <button
+                                        key={wallet.name}
+                                        onClick={() => {
+                                            connect(wallet.name)
+                                            setIsOpen(false)
+                                        }}
+                                        className="w-full flex items-center px-4 py-3 rounded-xl border border-white hover:border-red-300 hover:bg-red-100 transition-colors"
+                                    >
+                                        <img
+                                            src={wallet.icon}
+                                            alt={wallet.name}
+                                            className="w-6 h-6 object-contain"
+                                        />
+                                        <span className="ml-3 font-medium text-gray-800">
+                                            {wallet.name}
+                                        </span>
+                                    </button>
+                                ))}
                         </div>
 
                         {/* Footer */}
-                        <div className="mt-8 pt-2 px-5 pb-5 border-t border-gray-100">
-                            <p className="text-sm text-gray-500 text-start">
-                                New to Aptos?{" "}
-                                <button className="text-blue-600 hover:text-blue-700 font-medium">
-                                    Learn More Here
-                                </button>
-                            </p>
+                        <div className="border-t border-gray-200 px-6 py-4 text-sm text-gray-600">
+                            <span>New to Aptos? </span>
+                            <button className="text-blue-600 hover:text-blue-700 font-medium">
+                                Learn More
+                            </button>
                         </div>
-
                     </div>
                 </div>
             )}

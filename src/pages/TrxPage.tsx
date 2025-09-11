@@ -1,18 +1,15 @@
 'use client'
 
 import React from 'react'
-import { useWallet } from '@aptos-labs/wallet-adapter-react'
+import NavbarTrx from '@/sections/NavbarTrx';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import HeroTrx from '@/sections/HeroTrx';
 
 const TrxPage = () => {
-    const { disconnect } = useWallet();
     return (
         <div>
-             <button
-            onClick={disconnect}
-            className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Disconnect
-          </button>
+          <NavbarTrx/>
+          <HeroTrx/>
         </div>
     )
 }

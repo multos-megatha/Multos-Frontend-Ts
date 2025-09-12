@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import Method1 from './Method1'
 import Method2 from './Method2'
 
-const HeroTrxComp = () => {
+interface Method1Props {
+    balance: number; 
+}
+
+const HeroTrxComp: React.FC<Method1Props> = ({ balance }) => {
     const [batchOpen, setBatchOpen] = useState(true)
 
     return (
@@ -52,7 +56,7 @@ const HeroTrxComp = () => {
 
             {/* Conditional Rendering */}
             <div className="mt-6">
-                {batchOpen ? <Method1 /> : <Method2 />}
+                {batchOpen ? <Method1 balance={balance}/> : <Method2 balance={balance}/>}
             </div>
         </div>
     )

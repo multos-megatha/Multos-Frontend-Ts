@@ -21,9 +21,9 @@ export default function RootLayout({
         <AptosWalletAdapterProvider
           autoConnect={true}
           dappConfig={{
-            network: Network.MAINNET,
+            network: Network.TESTNET,
             aptosApiKeys: {
-              mainnet: process.env.APTOS_API_KEY_MAINNET,
+              mainnet: process.env.APTOS_API_KEY_TESTNET,
             }
           }}
           onError={(error) => {

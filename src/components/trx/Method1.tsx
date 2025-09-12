@@ -7,19 +7,16 @@ interface TransferItem {
     amount: number;
 }
 
-interface ConfirmationData {
-    transfers: TransferItem[];
-    total: number;
-    fee: number;
-    currentBalance: number;
+interface Method1Props {
+    balance: number; // balance asli dari wallet
 }
 
-const Method1: React.FC = () => {
+const Method1: React.FC<Method1Props> = ({ balance }) => {
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
     ]);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [currentBalance] = useState(50000); // Mock balance
+
     const feePercentage = 0.01; // 1%
 
     const addTransferRow = () => {
@@ -50,7 +47,6 @@ const Method1: React.FC = () => {
     const handleConfirm = () => {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
         if (validTransfers.length === 0) return;
-
         setShowConfirmation(true);
     };
 
@@ -61,13 +57,12 @@ const Method1: React.FC = () => {
     const handleFinalConfirm = () => {
         alert('Transfer berhasil diproses!');
         setShowConfirmation(false);
-        // Reset form
-        setTransfers([{ id: '1', address: '', amount: 0 }]);
+        setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
     };
 
     const total = calculateTotal();
     const fee = calculateFee(total);
-    const remaining = currentBalance - total - fee;
+    const remaining = balance - total - fee;
 
     if (showConfirmation) {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
@@ -77,12 +72,8 @@ const Method1: React.FC = () => {
                 <h2 className="text-2xl font-bold mb-6 text-gray-800">Confirm</h2>
 
                 <div className="space-y-4">
-                    <div className="flex justify-between items-center text-sm font-medium text-gray-600 border-b pb-2">
-                        <span>Address</span>
-                        <span>Amount</span>
-                    </div>
-
-                    {validTransfers.map((transfer, index) => (
+                    {/* daftar transfer */}
+                    {validTransfers.map((transfer) => (
                         <div key={transfer.id} className="flex justify-between items-center py-2 border-b border-gray-100">
                             <span className="font-mono text-sm text-gray-700 flex-1 mr-4 break-all">
                                 {transfer.address}
@@ -95,21 +86,21 @@ const Method1: React.FC = () => {
 
                     <div className="mt-6 space-y-3 text-right">
                         <div className="flex justify-between">
-                            <span className="font-medium">total</span>
+                            <span className="font-medium">Total</span>
                             <span className="font-semibold">{total} APT</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium">fee {(feePercentage * 100)}%</span>
-                            <span className="font-semibold">{fee.toFixed(0)} APT</span>
+                            <span className="font-medium">Fee {(feePercentage * 100)}%</span>
+                            <span className="font-semibold">{fee.toFixed(2)} APT</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="font-medium">your balance</span>
-                            <span className="font-semibold">{currentBalance.toLocaleString()} APT</span>
+                            <span className="font-medium">Your Balance</span>
+                            <span className="font-semibold">{balance.toFixed(2)} APT</span>
                         </div>
                         <div className="flex justify-between border-t pt-2">
-                            <span className="font-medium">remaining</span>
+                            <span className="font-medium">Remaining</span>
                             <span className={`font-semibold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {remaining.toLocaleString()} APT
+                                {remaining.toFixed(2)} APT
                             </span>
                         </div>
                     </div>
@@ -151,7 +142,7 @@ const Method1: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-                {transfers.map((transfer, index) => (
+                {transfers.map((transfer) => (
                     <div key={transfer.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
                         <input
                             type="text"
@@ -195,7 +186,7 @@ const Method1: React.FC = () => {
                 <div className="flex justify-between items-center text-sm mt-1">
                     <span className="font-medium">Saldo tersisa:</span>
                     <span className={`font-bold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {remaining.toLocaleString()} APT
+                        {remaining.toFixed(2)} APT
                     </span>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import React from 'react'
 import NavbarTrx from '@/sections/NavbarTrx';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import HeroTrx from '@/sections/HeroTrx';
+import Footer from '@/sections/Footer';
 
 
 interface BalanceProps {
@@ -15,6 +16,7 @@ const TrxPage: React.FC<BalanceProps> = ({ balance }) => {
         <div>
           <NavbarTrx/>
           <HeroTrx balance={balance}/>
+          <Footer/>
         </div>
     )
 }

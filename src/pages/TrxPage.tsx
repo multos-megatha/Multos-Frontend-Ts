@@ -6,11 +6,11 @@ import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import HeroTrx from '@/sections/HeroTrx';
 
 
-interface Method1Props {
+interface BalanceProps {
     balance: number; 
 }
 
-const TrxPage: React.FC<Method1Props> = ({ balance }) => {
+const TrxPage: React.FC<BalanceProps> = ({ balance }) => {
     return (
         <div>
           <NavbarTrx/>

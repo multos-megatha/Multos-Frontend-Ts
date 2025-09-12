@@ -4,17 +4,29 @@ import { useWallet } from '@aptos-labs/wallet-adapter-react'
 import multoslogo from '../../public/multoslogo.png'
 import Image from 'next/image'
 import clsx from 'clsx'
+import { useEffect, useState, useRef } from 'react'
 
 
 const NavbarTrx = () => {
     const { connected, disconnect, account } = useWallet()
+
+    const [open, setOpen] = useState(false)
+    const dropdownRef = useRef<HTMLDivElement>(null)
 
     const shortenAddress = (address?: string | null): string => {
         if (!address) return "";
         return `${address.slice(0, 6)}...${address.slice(-4)}`;
     };
 
-
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
 
 
     return (
@@ -34,7 +46,7 @@ const NavbarTrx = () => {
                         <button
                             className={clsx(
                                 'bg-gray-100 backdrop-blur-sm rounded-3xl px-4 py-2 transition-all duration-200',
-                                'flex items-center justify-center hover:bg-gray-200 text-gray-800 text-sm font-medium'
+                                'items-center justify-center hover:bg-gray-200 text-gray-800 text-sm font-medium hidden sm:flex'
                             )}
                         >
                             {shortenAddress(account?.address?.toString())}
@@ -45,17 +57,42 @@ const NavbarTrx = () => {
                             onClick={disconnect}
                             className={clsx(
                                 'bg-red-100 text-red-600 rounded-3xl px-4 py-2 transition-all duration-200',
-                                'flex items-center justify-center hover:bg-red-200 text-sm font-medium'
+                                'items-center justify-center hover:bg-red-200 text-sm font-medium hidden sm:flex'
                             )}
                         >
                             Disconnect
                         </button>
+
+                        <div className="relative sm:hidden" ref={dropdownRef}>
+                            {/* Address button */}
+                            <button
+                                onClick={() => setOpen(!open)}
+                                className={clsx(
+                                    'bg-gray-100 backdrop-blur-sm rounded-3xl px-4 py-2 transition-all duration-200',
+                                    'flex items-center justify-center hover:bg-gray-200 text-gray-800 text-sm font-medium'
+                                )}
+                            >
+                                {shortenAddress(account?.address?.toString())}
+                            </button>
+
+                            {/* Dropdown popup */}
+                            {open && (
+                                <div className="absolute top-full right-0 mt-2 bg-red-100 rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 min-w-32 animate-in slide-in-from-top-2 duration-500">
+                                    <button
+                                        onClick={disconnect}
+                                        className="w-full px-2 py-2 text-sm text-red-600 hover:bg-red-50 text-center"
+                                    >
+                                        Disconnect
+                                    </button>
+                                </div>
+                            )}
+                    </div>
                     </div>
                 )}
 
 
-            </div>
-        </nav>
+        </div>
+        </nav >
     )
 }
 

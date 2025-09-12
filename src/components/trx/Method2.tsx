@@ -6,11 +6,11 @@ interface TransferItem {
   amount: number;
 }
 
-interface Method2Props {
+interface BalanceProps {
   balance: number; // balance asli dari wallet
 }
 
-const Method2: React.FC<Method2Props> = ({ balance }) => {
+const Method2: React.FC<BalanceProps> = ({ balance }) => {
   const [transfers, setTransfers] = useState<TransferItem[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
@@ -137,7 +137,7 @@ const Method2: React.FC<Method2Props> = ({ balance }) => {
               disabled={remaining < 0}
               className={`flex-1 px-4 py-2 rounded-lg font-medium ${
                 remaining >= 0
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-red-600 text-white hover:bg-red-700'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
@@ -167,7 +167,7 @@ const Method2: React.FC<Method2Props> = ({ balance }) => {
 0x141ca95b6177615fb1417cf70e930e102bf8f584 10`}
           value={textareaValue}
           onChange={handleBatchPaste}
-          className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm bg-gray-50"
+          className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-sm bg-gray-50"
         />
         <p className="text-xs text-gray-500 mt-1">
           Each line should contain: wallet_address amount (separated by space or tab)
@@ -194,17 +194,17 @@ const Method2: React.FC<Method2Props> = ({ balance }) => {
       )}
 
       {total > 0 && (
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+        <div className="mt-6 p-4 bg-red-50 rounded-lg">
           <div className="flex justify-between items-center text-sm">
-            <span className="font-medium">Total yang akan ditransfer:</span>
-            <span className="font-bold text-blue-600">{total} APT</span>
+            <span className="font-medium">Amount to send:</span>
+            <span className="font-bold text-black">{total} APT</span>
           </div>
           <div className="flex justify-between items-center text-sm mt-1">
-            <span className="font-medium">Estimasi fee (1%):</span>
-            <span className="font-bold text-blue-600">{fee.toFixed(2)} APT</span>
+            <span className="font-medium">Estimated fee (1%):</span>
+            <span className="font-bold text-black">{fee.toFixed(2)} APT</span>
           </div>
           <div className="flex justify-between items-center text-sm mt-1">
-            <span className="font-medium">Saldo tersisa:</span>
+            <span className="font-medium">Remaining balance:</span>
             <span className={`font-bold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {remaining.toFixed(2)} APT
             </span>
@@ -225,7 +225,7 @@ const Method2: React.FC<Method2Props> = ({ balance }) => {
           disabled={total === 0 || remaining < 0}
           className={`flex-1 px-4 py-2 rounded-lg font-medium ${
             total > 0 && remaining >= 0
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-red-600 text-white hover:bg-red-700'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >

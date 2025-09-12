@@ -2,25 +2,26 @@ import React, { useState } from 'react'
 import Method1 from './Method1'
 import Method2 from './Method2'
 
-interface Method1Props {
-    balance: number; 
+interface BalanceProps {
+    balance: number;
 }
 
-const HeroTrxComp: React.FC<Method1Props> = ({ balance }) => {
+const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
     const [batchOpen, setBatchOpen] = useState(true)
 
     return (
-        <div>
+        <div className="relative min-h-screen overflow-hidden p-4">
+
+
             {/* Header */}
-            <div className="flex justify-center items-center text-center">
-                <div className="flex flex-col md:flex-row items-center justify-center lg:justify-start space-y-2 lg:space-y-0 lg:space-x-2">
-                    <img src='./multoslogo.png' alt="logo" className='h-16 sm:h-20 md:h-24 rounded-xl' />
-                    <div className="flex flex-col justify-start text-center lg:text-left">
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900">
-                            Multos
-                        </h1>
-                        <div className="flex items-center justify-center mt-1 lg:justify-start space-x-2">
-                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+            <div className='flex justify-center items-center'>
+                <div className='flex flex-col md:flex-row items-center justify-center lg:justify-center space-y-2 lg:space-y-0 lg:space-x-3'>
+                    <img src='./multoslogo.png' alt="" className='h-16 sm:h-20 md:h-24 rounded-xl' />
+
+                    <div className='flex flex-col justify-start text-center lg:text-left'>
+                        <h1 className='text-2xl sm:text-3xl md:text-4xl font-black text-gray-900'>Multos</h1>
+                        <div className='flex items-center justify-center mt-1 lg:justify-start space-x-2'>
+                            <div className='w-2 h-2 bg-red-500 rounded-full animate-pulse'></div>
                             <span className="text-xs sm:text-sm md:text-base text-gray-600 font-medium">
                                 Multi Transaction Token On Aptos
                             </span>
@@ -30,34 +31,74 @@ const HeroTrxComp: React.FC<Method1Props> = ({ balance }) => {
             </div>
 
             {/* Subtext */}
-            <div className="px-8 py-6 space-y-4">
-                <p className="text-sm sm:text-base md:text-lg text-center text-gray-600 max-w-2xl mx-auto">
-                    verb distribute aptos or tokens to multiple addresses
-                </p>
+            <div>
+                <div className='space-y-6 text-center mt-4 md:mt-10'>
+                    <div className='space-y-5 md:space-y-11'>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900">
+                            Send to Thousands,
+                            <br />
+                            <span className="bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 bg-clip-text text-transparent">
+                                In One Transaction
+                            </span>
+
+                        </h2>
+
+                        <div className="flex justify-center">
+                            <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl border shadow-lg px-10 py-6 w-[320px] hover:scale-105 transition-transform duration-300">
+                                <div className="flex items-center justify-center">
+                                    <div>
+                                        <p className="text-sm text-red-600 font-bold text-center mb-3">Your Balance</p>
+                                        <p className="text-3xl font-extrabold text-black text-center">{balance} APT</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
             </div>
+
 
             {/* Toggle Button */}
-            <div className="relative z-4 mx-auto flex w-[375px] rounded-3xl border-[3px] border-gray-300 bg-white/50 p-2 backdrop-blur-[6px]">
-                <button
-                    onClick={() => setBatchOpen(true)}
-                    className={`flex-1 py-2 rounded-2xl font-bold transition ${batchOpen ? "bg-blue-500 text-white" : "text-gray-600"
-                        }`}
-                >
-                    Manual
-                </button>
-                <button
-                    onClick={() => setBatchOpen(false)}
-                    className={`flex-1 py-2 rounded-2xl font-bold transition ${!batchOpen ? "bg-blue-500 text-white" : "text-gray-600"
-                        }`}
-                >
-                    Batch
-                </button>
+            <div className="flex justify-center mt-10 px-4">
+                <div className="relative w-full max-w-md">
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-300/30 to-rose-300/30 rounded-full blur-lg"></div>
+
+                    {/* Button container */}
+                    <div className="relative flex sm:flex-row rounded-full border-2 border-red/50 bg-white/40 backdrop-blur-lg py-1.5 px-2.5 shadow-xl gap-2 sm:gap-0">
+                        {/* Manual Button */}
+                        <button
+                            onClick={() => setBatchOpen(true)}
+                            className={`flex-1 py-3 px-6 rounded-full font-bold transition-all duration-300 ${batchOpen
+                                    ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white shadow-lg scale-105"
+                                    : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
+                                }`}
+                        >
+                            Manual
+                        </button>
+
+                        {/* Batch Button */}
+                        <button
+                            onClick={() => setBatchOpen(false)}
+                            className={`flex-1 py-3 px-6 rounded-full font-bold transition-all duration-300 ${!batchOpen
+                                    ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white shadow-lg scale-105"
+                                    : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
+                                }`}
+                        >
+                            Batch
+                        </button>
+                    </div>
+                </div>
             </div>
 
+
             {/* Conditional Rendering */}
-            <div className="mt-6">
-                {batchOpen ? <Method1 balance={balance}/> : <Method2 balance={balance}/>}
+            <div className="mt-10">
+                {batchOpen ? <Method1 balance={balance} /> : <Method2 balance={balance} />}
             </div>
+
         </div>
     )
 }

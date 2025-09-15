@@ -27,13 +27,15 @@ const FeatureSection = () => {
                         <div>
                             <TrendingUp className='w-5 h-5' />
                         </div>
-                        <span>View Deck Presentation</span>
+                        <span className='text-[13px] md:text-base'>View Deck Presentation</span>
+
                         <div>
                             <ArrowRight className='w-4 h-4' />
                         </div>
                     </div>
                 </button>
             </div>
+
 
             <div className='space-y-3'>
                 <div className='grid grid-cols-2 gap-3'>

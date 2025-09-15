@@ -35,11 +35,29 @@ const Method2: React.FC<BalanceProps> = ({ balance }) => {
   };
 
   const handleFinalConfirm = () => {
+    // konversi semua amount ke Octa (1 APT = 1e8 Octa)
+    const payload = transfers.map(t => ({
+      ...t,
+      amount: Math.round(t.amount * 1e8), // konversi ke integer Octa
+    }));
+
+    console.log("Data siap dikirim ke backend:", payload);
+
+    // TODO: kirim ke backend, contoh fetch/axios
+    // await fetch('/api/transfer', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(payload),
+    // });
+
     alert('Transfer berhasil diproses!');
+
+    // reset state
     setShowConfirmation(false);
     setTransfers([]);
     setTextareaValue('');
   };
+
 
   const handleBatchPaste = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const text = e.target.value.trim();
@@ -135,11 +153,10 @@ const Method2: React.FC<BalanceProps> = ({ balance }) => {
             <button
               onClick={handleFinalConfirm}
               disabled={remaining < 0}
-              className={`flex-1 px-4 py-2 rounded-lg font-medium ${
-                remaining >= 0
+              className={`flex-1 px-4 py-2 rounded-lg font-medium ${remaining >= 0
                   ? 'bg-red-600 text-white hover:bg-red-700'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
+                }`}
             >
               Confirm Transfer
             </button>
@@ -223,11 +240,10 @@ const Method2: React.FC<BalanceProps> = ({ balance }) => {
         <button
           onClick={handleConfirm}
           disabled={total === 0 || remaining < 0}
-          className={`flex-1 px-4 py-2 rounded-lg font-medium ${
-            total > 0 && remaining >= 0
+          className={`flex-1 px-4 py-2 rounded-lg font-medium ${total > 0 && remaining >= 0
               ? 'bg-red-600 text-white hover:bg-red-700'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+            }`}
         >
           Continue
         </button>

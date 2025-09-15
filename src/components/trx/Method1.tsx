@@ -54,11 +54,30 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
         setShowConfirmation(false);
     };
 
+    // const handleFinalConfirm = () => {
+    //     alert('Transfer berhasil diproses!');
+    //     setShowConfirmation(false);
+    //     setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+    // };
+
     const handleFinalConfirm = () => {
-        alert('Transfer berhasil diproses!');
-        setShowConfirmation(false);
-        setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-    };
+    const validTransfers = transfers.filter(t => t.address && t.amount > 0);
+
+    // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
+    const payload = validTransfers.map(t => ({
+        ...t,
+        amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
+    }));
+
+    console.log("Data asli (APT):", validTransfers);   
+    console.log("Data kirim ke blockchain (Octa):", payload);
+
+    alert('Transfer berhasil diproses!');
+
+    setShowConfirmation(false);
+    setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+};
+
 
     const total = calculateTotal();
     const fee = calculateFee(total);

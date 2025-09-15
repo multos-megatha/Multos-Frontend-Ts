@@ -34,15 +34,6 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
             <div>
                 <div className='space-y-6 text-center mt-4 md:mt-10'>
                     <div className='space-y-5 md:space-y-11'>
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900">
-                            Send to Thousands,
-                            <br />
-                            <span className="bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 bg-clip-text text-transparent">
-                                In One Transaction
-                            </span>
-
-                        </h2>
-
                         <div className="flex justify-center">
                             <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl border shadow-lg px-10 py-6 w-[320px] hover:scale-105 transition-transform duration-300">
                                 <div className="flex items-center justify-center">

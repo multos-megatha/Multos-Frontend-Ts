@@ -48,8 +48,7 @@ const LeftHero = () => {
                             </h2>
 
                             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                The most advanced, secure, and cost-efficient way to distribute tokens on the Aptos blockchain.
-                                Built for enterprises and power users.
+                                The fastest, most secure, and cost-efficient way to distribute tokens on the Aptos blockchain.
                             </p>
 
                         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
+import { useDisperseAPT } from '@/utils/HandleWeb3';
 
 interface TransferItem {
     id: string;
@@ -12,6 +13,8 @@ interface BalanceProps {
 }
 
 const Method1: React.FC<BalanceProps> = ({ balance }) => {
+    const {disperseAPT, connected, account} = useDisperseAPT()
+
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
     ]);
@@ -54,30 +57,36 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
         setShowConfirmation(false);
     };
 
-    // const handleFinalConfirm = () => {
-    //     alert('Transfer berhasil diproses!');
-    //     setShowConfirmation(false);
-    //     setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-    // };
+    async function handleFinalConfirm(){
+        if(!connected || !account) {
+            alert('please connect your wallet');
+            return
+        }
 
-    const handleFinalConfirm = () => {
-    const validTransfers = transfers.filter(t => t.address && t.amount > 0);
+        const validTransfers = transfers.filter(t => t.address && t.amount > 0);
 
-    // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
-    const payload = validTransfers.map(t => ({
-        ...t,
-        amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
-    }));
+        // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
+        const payload = validTransfers.map(t => ({
+            ...t,
+            amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
+        }));
 
-    console.log("Data asli (APT):", validTransfers);   
-    console.log("Data kirim ke blockchain (Octa):", payload);
+        let amounts: bigint[] = []
+        let recipients: string[] = []
+        
+        for(let i = 0; i < payload.length; i++){
+            amounts.push(BigInt(payload[i].amount));
+            recipients.push(payload[i].address);
+        }
 
-    alert('Transfer berhasil diproses!');
-
-    setShowConfirmation(false);
-    setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-};
-
+        try{
+            await disperseAPT(amounts, recipients);
+            setShowConfirmation(false);
+            setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+        } catch (error) {
+            console.error(`transaction failed:`, error);
+        }
+    }
 
     const total = calculateTotal();
     const fee = calculateFee(total);

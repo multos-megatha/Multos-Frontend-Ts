@@ -57,6 +57,7 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
         setShowConfirmation(false);
     };
 
+    const [transactionHash, setTransactionHash] = useState<string>(``)
     async function handleFinalConfirm(){
         if(!connected || !account) {
             alert('please connect your wallet');
@@ -80,9 +81,12 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
         }
 
         try{
-            await disperseAPT(amounts, recipients);
-            setShowConfirmation(false);
-            setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+            const txnResult =  await disperseAPT(amounts, recipients);
+            console.log(txnResult)
+            console.log(typeof txnResult)
+            setTransactionHash(txnResult as string)
+            // setShowConfirmation(false);
+            // setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
         } catch (error) {
             console.error(`transaction failed:`, error);
         }
@@ -161,6 +165,7 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
                             Confirm Transfer
                         </button>
                     </div>
+                    <p>transaction successful: {transactionHash}</p>
                 </div>
             </div>
         );

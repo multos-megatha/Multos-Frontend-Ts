@@ -5,6 +5,18 @@ import { error } from "console";
 const config = new AptosConfig({ network: Network.TESTNET });
 const aptos = new Aptos(config);
 
+interface TokenMetadata {
+    decimals: number,
+    icon_uri: string,
+    name: string,
+    project_uri: string,
+    symbol: string
+}
+
+interface TokenAmount {
+    amount: string
+}
+
 
 export const useDisperseAPT = () => {
     const {connected, account, signAndSubmitTransaction } = useWallet()
@@ -44,4 +56,62 @@ export const useDisperseAPT = () => {
     };
 
     return { disperseAPT, connected, account}
+}
+
+export const fetchToken = () => {
+    const {account, connected} = useWallet()
+
+    const readMetadata = async (tokenAddress: string) => {
+        try {
+            const metadata = await aptos.view({
+                payload: {
+                    function: "0x1::fungible_asset::metadata",
+                    typeArguments: ["0x1::fungible_asset::Metadata"],
+                    functionArguments: [tokenAddress]
+                }
+            })
+
+            return metadata
+        } catch (error) {
+            console.error("error fetching FA metadata:", error);
+            throw error;
+        }
+    }
+
+    const getTokenSymbol = async (tokenAddress: string) => {
+        try {
+            const metadata = await readMetadata(tokenAddress);
+            const tokenMetadata = metadata[0] as TokenMetadata
+
+            return tokenMetadata.symbol
+        } catch (error){
+            console.error("error fetching token symbol:", error);
+            throw error;
+        }
+    }
+
+    const getTokenAmount = async (tokenAddress: string) => {
+        if(!connected || !account?.address){
+            alert(`wallet is not connected`);
+            return {error: `wallet is not connected`};
+        }
+
+        try {
+            const balance = await aptos.view({
+                payload: {
+                    function: "0x1::primary_fungible_store::balance",
+                    typeArguments: ["0x1::object::ObjectCore"],
+                    functionArguments: [account.address, tokenAddress]
+                }
+            });
+            
+            const amount = balance[0]
+            return amount
+        } catch (error) {
+            console.log("error fetching balance:", error)
+            throw error
+        }
+    }
+
+    return {readMetadata, getTokenSymbol, getTokenAmount}
 }

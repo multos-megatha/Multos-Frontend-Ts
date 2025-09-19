@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
-import { useDisperseAPT } from '@/utils/HandleWeb3';
+import { useDisperseAPT, fetchToken } from '@/utils/HandleWeb3';
 
 interface TransferItem {
     id: string;
@@ -14,6 +14,7 @@ interface BalanceProps {
 
 const Method1: React.FC<BalanceProps> = ({ balance }) => {
     const {disperseAPT, connected, account} = useDisperseAPT()
+    const {getTokenSymbol, getTokenAmount} = fetchToken()
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -90,6 +91,21 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
         } catch (error) {
             console.error(`transaction failed:`, error);
         }
+    }
+
+    const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
+    const [tokenSymbol, setTokenSymbol] = useState('');
+    const [tokenAmount, setTokenAmount] = useState('');
+    const handleLoad = async () => {
+        try {
+            const metadata = await getTokenSymbol(inputtedTokenAddr);
+            const amount = await getTokenAmount(inputtedTokenAddr);
+            setTokenAmount(amount as string)
+            setTokenSymbol(metadata)
+        } catch (error) {
+            throw error
+        }
+        
     }
 
     const total = calculateTotal();
@@ -173,6 +189,19 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
 
     return (
         <div className="max-w-2xl mx-auto p-6 rounded-lg ">
+            {/* form input custom token */}
+            <h2 className='text-2xl font-bold text-gray-800'>Token Address</h2>
+            <div className='flex flex-row items-center gap-2 w-ful mb-5'>
+                <input 
+                    type="text"
+                    placeholder='Enter token contract address'
+                    className='flex-grow min-w-0 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-xs md:text-sm'
+                    value={inputtedTokenAddr}
+                    onChange={(e) => setInputtedTokenAddr(e.target.value)}
+                />
+                <button className='flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium text-sm' onClick={handleLoad}>Load</button>
+            </div>
+            <p>you have {tokenAmount} {tokenSymbol}</p>
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Address</h2>
                 <button

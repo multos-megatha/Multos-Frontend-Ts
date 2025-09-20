@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
+import { useDisperseAPT, fetchToken } from '@/utils/HandleWeb3';
 
 interface TransferItem {
     id: string;
@@ -12,6 +13,9 @@ interface BalanceProps {
 }
 
 const Method1: React.FC<BalanceProps> = ({ balance }) => {
+    const {disperseAPT, connected, account} = useDisperseAPT()
+    const {getTokenSymbol, getTokenAmount} = fetchToken()
+
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
     ]);
@@ -54,30 +58,55 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
         setShowConfirmation(false);
     };
 
-    // const handleFinalConfirm = () => {
-    //     alert('Transfer berhasil diproses!');
-    //     setShowConfirmation(false);
-    //     setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-    // };
+    const [transactionHash, setTransactionHash] = useState<string>(``)
+    async function handleFinalConfirm(){
+        if(!connected || !account) {
+            alert('please connect your wallet');
+            return
+        }
 
-    const handleFinalConfirm = () => {
-    const validTransfers = transfers.filter(t => t.address && t.amount > 0);
+        const validTransfers = transfers.filter(t => t.address && t.amount > 0);
 
-    // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
-    const payload = validTransfers.map(t => ({
-        ...t,
-        amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
-    }));
+        // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
+        const payload = validTransfers.map(t => ({
+            ...t,
+            amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
+        }));
 
-    console.log("Data asli (APT):", validTransfers);   
-    console.log("Data kirim ke blockchain (Octa):", payload);
+        let amounts: bigint[] = []
+        let recipients: string[] = []
+        
+        for(let i = 0; i < payload.length; i++){
+            amounts.push(BigInt(payload[i].amount));
+            recipients.push(payload[i].address);
+        }
 
-    alert('Transfer berhasil diproses!');
+        try{
+            const txnResult =  await disperseAPT(amounts, recipients);
+            console.log(txnResult)
+            console.log(typeof txnResult)
+            setTransactionHash(txnResult as string)
+            // setShowConfirmation(false);
+            // setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+        } catch (error) {
+            console.error(`transaction failed:`, error);
+        }
+    }
 
-    setShowConfirmation(false);
-    setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-};
-
+    const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
+    const [tokenSymbol, setTokenSymbol] = useState('');
+    const [tokenAmount, setTokenAmount] = useState('');
+    const handleLoad = async () => {
+        try {
+            const metadata = await getTokenSymbol(inputtedTokenAddr);
+            const amount = await getTokenAmount(inputtedTokenAddr);
+            setTokenAmount(amount as string)
+            setTokenSymbol(metadata)
+        } catch (error) {
+            throw error
+        }
+        
+    }
 
     const total = calculateTotal();
     const fee = calculateFee(total);
@@ -152,6 +181,7 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
                             Confirm Transfer
                         </button>
                     </div>
+                    <p>transaction successful: {transactionHash}</p>
                 </div>
             </div>
         );
@@ -159,6 +189,19 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
 
     return (
         <div className="max-w-2xl mx-auto p-6 rounded-lg ">
+            {/* form input custom token */}
+            <h2 className='text-2xl font-bold text-gray-800'>Token Address</h2>
+            <div className='flex flex-row items-center gap-2 w-ful mb-5'>
+                <input 
+                    type="text"
+                    placeholder='Enter token contract address'
+                    className='flex-grow min-w-0 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-xs md:text-sm'
+                    value={inputtedTokenAddr}
+                    onChange={(e) => setInputtedTokenAddr(e.target.value)}
+                />
+                <button className='flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium text-sm' onClick={handleLoad}>Load</button>
+            </div>
+            <p>you have {tokenAmount} {tokenSymbol}</p>
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Address</h2>
                 <button

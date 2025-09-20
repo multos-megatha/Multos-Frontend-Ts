@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useWallet } from '@aptos-labs/wallet-adapter-react'
-import multoslogo from '../../public/multoslogo.png'
+import multoslogo from '../../public/multosfinal.svg'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useEffect, useState, useRef } from 'react'

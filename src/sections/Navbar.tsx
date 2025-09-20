@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image'
-import multoslogo from '../../public/multoslogo.png'
+import multoslogo from '../../public/multosfinal.svg'
 import clsx from 'clsx'
 import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, ChevronUp, Check } from 'lucide-react'

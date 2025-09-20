@@ -8,13 +8,15 @@ interface TransferItem {
     amount: number;
 }
 
-interface BalanceProps {
+interface Method1Props {
     balance: number; // balance asli dari wallet
+    isCustom: boolean;
 }
 
-const Method1: React.FC<BalanceProps> = ({ balance }) => {
-    const {disperseAPT, connected, account} = useDisperseAPT()
-    const {getTokenSymbol, getTokenAmount} = fetchToken()
+const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
+
+    const { disperseAPT, connected, account } = useDisperseAPT()
+    const { getTokenSymbol, getTokenAmount } = fetchToken()
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -59,8 +61,8 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
     };
 
     const [transactionHash, setTransactionHash] = useState<string>(``)
-    async function handleFinalConfirm(){
-        if(!connected || !account) {
+    async function handleFinalConfirm() {
+        if (!connected || !account) {
             alert('please connect your wallet');
             return
         }
@@ -75,14 +77,14 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
 
         let amounts: bigint[] = []
         let recipients: string[] = []
-        
-        for(let i = 0; i < payload.length; i++){
+
+        for (let i = 0; i < payload.length; i++) {
             amounts.push(BigInt(payload[i].amount));
             recipients.push(payload[i].address);
         }
 
-        try{
-            const txnResult =  await disperseAPT(amounts, recipients);
+        try {
+            const txnResult = await disperseAPT(amounts, recipients);
             console.log(txnResult)
             console.log(typeof txnResult)
             setTransactionHash(txnResult as string)
@@ -95,22 +97,34 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
 
     const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
-    const [tokenAmount, setTokenAmount] = useState('');
+    // const [tokenAmount, setTokenAmount] = useState('');
+    const [tokenAmount, setTokenAmount] = useState<number>(0);
+
     const handleLoad = async () => {
         try {
             const metadata = await getTokenSymbol(inputtedTokenAddr);
             const amount = await getTokenAmount(inputtedTokenAddr);
-            setTokenAmount(amount as string)
+
+            const convertedAmount = Number(amount) / 1e6;
+
+            // setTokenAmount(convertedAmount.toString());
+            setTokenAmount(convertedAmount);
             setTokenSymbol(metadata)
         } catch (error) {
             throw error
         }
-        
+
     }
 
     const total = calculateTotal();
     const fee = calculateFee(total);
-    const remaining = balance - total - fee;
+    // const remaining = balance - total - fee;
+
+    // hitung khusus APT
+    const remainingAPT = balance - total - fee;
+
+    // hitung khusus custom token
+    const remainingToken = tokenAmount - total - fee;
 
     const shortenNumber = (num: number, decimals = 2): string => {
         if (isNaN(num)) return "0";
@@ -137,7 +151,7 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
                                 {transfer.address}
                             </span>
                             <span className="font-semibold text-gray-900 whitespace-nowrap">
-                                {transfer.amount} APT
+                                {transfer.amount} {isCustom ? tokenSymbol : "APT"}
                             </span>
                         </div>
                     ))}
@@ -145,22 +159,35 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
                     <div className="mt-6 space-y-3 text-right">
                         <div className="flex justify-between">
                             <span className="font-medium">Total</span>
-                            <span className="font-semibold">{total} APT</span>
+                            <span className="font-semibold">{total} {isCustom ? tokenSymbol : "APT"}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="font-medium">Fee {(feePercentage * 100)}%</span>
-                            <span className="font-semibold">{shortenNumber(fee)} APT</span>
+                            <span className="font-semibold">{shortenNumber(fee)} {isCustom ? tokenSymbol : "APT"}</span>
                         </div>
                         <div className="flex justify-between">
                             <span className="font-medium">Your Balance</span>
-                            <span className="font-semibold">{shortenNumber(balance)} APT</span>
-                        </div>
-                        <div className="flex justify-between border-t pt-2">
-                            <span className="font-medium">Remaining</span>
-                            <span className={`font-semibold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {shortenNumber(remaining)} APT
+                            <span className="font-semibold">
+                                {isCustom
+                                    ? `${tokenAmount} ${tokenSymbol}`
+                                    : `${shortenNumber(balance)} APT`}
                             </span>
                         </div>
+
+                        <div className="flex justify-between border-t pt-2">
+                            <span className="font-medium">Remaining</span>
+                            <span
+                                className={`font-semibold ${(isCustom ? remainingToken : remainingAPT) >= 0
+                                        ? "text-green-600"
+                                        : "text-red-600"
+                                    }`}
+                            >
+                                {isCustom
+                                    ? `${remainingToken} ${tokenSymbol}`
+                                    : `${shortenNumber(remainingAPT)} APT`}
+                            </span>
+                        </div>
+
                     </div>
 
                     <div className="flex flex-col md:flex-row gap-3 mt-6">
@@ -172,8 +199,8 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
                         </button>
                         <button
                             onClick={handleFinalConfirm}
-                            disabled={remaining < 0}
-                            className={`flex-1 px-4 py-2 rounded-lg font-medium ${remaining >= 0
+                            disabled={remainingAPT < 0}
+                            className={`flex-1 px-4 py-2 rounded-lg font-medium ${remainingAPT >= 0
                                 ? 'bg-red-600 text-white hover:bg-red-700'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 }`}
@@ -189,19 +216,34 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
 
     return (
         <div className="max-w-2xl mx-auto p-6 rounded-lg ">
-            {/* form input custom token */}
-            <h2 className='text-2xl font-bold text-gray-800'>Token Address</h2>
-            <div className='flex flex-row items-center gap-2 w-ful mb-5'>
-                <input 
-                    type="text"
-                    placeholder='Enter token contract address'
-                    className='flex-grow min-w-0 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-xs md:text-sm'
-                    value={inputtedTokenAddr}
-                    onChange={(e) => setInputtedTokenAddr(e.target.value)}
-                />
-                <button className='flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium text-sm' onClick={handleLoad}>Load</button>
-            </div>
-            <p>you have {tokenAmount} {tokenSymbol}</p>
+
+
+            {isCustom && (
+                <>
+                    <h2 className="text-2xl font-bold text-gray-800">Token Address</h2>
+                    <div className="flex flex-row items-center gap-2 w-full mb-5">
+                        <input
+                            type="text"
+                            placeholder="Enter token contract address"
+                            className="flex-grow min-w-0 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-xs md:text-sm"
+                            value={inputtedTokenAddr}
+                            onChange={(e) => setInputtedTokenAddr(e.target.value)}
+                        />
+                        <button
+                            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium text-sm"
+                            onClick={handleLoad}
+                        >
+                            Load
+                        </button>
+                    </div>
+                    <p>
+                        you have {tokenAmount} {tokenSymbol}
+                    </p>
+                </>
+            )}
+
+
+
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Address</h2>
                 <button
@@ -259,16 +301,24 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
             <div className="mt-6 p-4 bg-red-50 rounded-lg">
                 <div className="flex justify-between items-center text-sm">
                     <span className="font-medium">Amount to send:</span>
-                    <span className="font-bold text-black">{total} APT</span>
+                    <span className="font-bold text-black">{total} {isCustom ? tokenSymbol : "APT"}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm mt-1">
                     <span className="font-medium">Estimated fee (1%):</span>
-                    <span className="font-bold text-black">{shortenNumber(fee)} APT</span>
+                    <span className="font-bold text-black">
+                        {shortenNumber(fee)} {isCustom ? tokenSymbol : "APT"}
+                    </span>
                 </div>
                 <div className="flex justify-between items-center text-sm mt-1">
                     <span className="font-medium">Remaining balance:</span>
-                    <span className={`font-bold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {shortenNumber(remaining)} APT
+                    <span
+                        className={`font-bold ${(isCustom ? remainingToken : remainingAPT) >= 0
+                            ? "text-green-600"
+                            : "text-red-600"
+                            }`}
+                    >
+                        {shortenNumber(isCustom ? remainingToken : remainingAPT)}{" "}
+                        {isCustom ? tokenSymbol : "APT"}
                     </span>
                 </div>
             </div>
@@ -276,15 +326,20 @@ const Method1: React.FC<BalanceProps> = ({ balance }) => {
             <div className="flex gap-3 mt-6">
                 <button
                     onClick={handleConfirm}
-                    disabled={total === 0 || remaining < 0}
-                    className={`flex-1 px-4 py-2 rounded-lg font-medium ${total > 0 && remaining >= 0
-                        ? 'bg-red-600 text-white hover:bg-red-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    disabled={
+                        total === 0 ||
+                        (isCustom ? remainingToken < 0 : remainingAPT < 0)
+                    }
+                    className={`flex-1 px-4 py-2 rounded-lg font-medium ${total > 0 &&
+                        (isCustom ? remainingToken >= 0 : remainingAPT >= 0)
+                        ? "bg-red-600 text-white hover:bg-red-700"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                 >
                     Continue
                 </button>
             </div>
+
         </div>
     );
 };

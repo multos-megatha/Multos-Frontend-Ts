@@ -6,11 +6,12 @@ interface TransferItem {
   amount: number;
 }
 
-interface BalanceProps {
+interface Method2Props {
   balance: number; // balance asli dari wallet
+  isCustom: boolean;
 }
 
-const Method2: React.FC<BalanceProps> = ({ balance }) => {
+const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
   const [transfers, setTransfers] = useState<TransferItem[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [textareaValue, setTextareaValue] = useState('');
@@ -168,6 +169,11 @@ const Method2: React.FC<BalanceProps> = ({ balance }) => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg">
+
+
+
+
+      
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Batch Import</h2>
       </div>

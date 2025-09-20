@@ -1,14 +1,17 @@
 'use client'
 
-import { User, X } from 'lucide-react'
+import { Loader2, User, X } from 'lucide-react'
 import React from 'react'
 import { keyFeatures, wallets } from '@/constants'
 import { useState } from 'react'
 import { useWallet } from '@aptos-labs/wallet-adapter-react'
+import LoaderPopup from '../LoaderPopup'
 
 const LeftHero = () => {
     const [isOpen, setIsOpen] = useState(false)
     const { connect, disconnect, connected, account, wallets } = useWallet();
+    const [loading, setLoading] = useState(false);
+
 
 
 
@@ -19,7 +22,7 @@ const LeftHero = () => {
                 {/* Logo & Title */}
                 <div className='flex justify-center items-center'>
                     <div className='flex flex-col md:flex-row items-center justify-center lg:justify-center space-y-2 lg:space-y-0 lg:space-x-3'>
-                        <img src='./multoslogo.png' alt="" className='h-16 sm:h-20 md:h-24 rounded-xl' />
+                        <img src='./multosfinal.svg' alt="" className='h-16 sm:h-20 md:h-24 rounded-xl' />
 
                         <div className='flex flex-col justify-start text-center lg:text-left'>
                             <h1 className='text-2xl sm:text-3xl md:text-4xl font-black text-gray-900'>Multos</h1>
@@ -146,7 +149,7 @@ const LeftHero = () => {
             </div>
 
             {/* Popup Modal */}
-            {isOpen && (
+            {isOpen && !loading && (
                 <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
                     <div className='bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden'>
                         {/* Header */}
@@ -174,9 +177,14 @@ const LeftHero = () => {
                                 .map((wallet) => (
                                     <button
                                         key={wallet.name}
-                                        onClick={() => {
-                                            connect(wallet.name)
-                                            setIsOpen(false)
+                                        onClick={async () => {
+                                            setLoading(true);
+                                            try {
+                                                await connect(wallet.name);
+                                            } finally {
+                                                setLoading(false);
+                                                setIsOpen(false);
+                                            }
                                         }}
                                         className="w-full flex items-center px-4 py-3 rounded-xl border border-white hover:border-red-300 hover:bg-red-100 transition-colors"
                                     >
@@ -201,6 +209,10 @@ const LeftHero = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {loading && (
+            <LoaderPopup />
             )}
 
         </div>

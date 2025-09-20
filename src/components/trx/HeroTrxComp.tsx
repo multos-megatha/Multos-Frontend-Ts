@@ -8,6 +8,7 @@ interface BalanceProps {
 
 const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
     const [batchOpen, setBatchOpen] = useState(true)
+    const [isCustom, setIsCustom] = useState(false)
 
     return (
         <div className="relative min-h-screen overflow-hidden p-4">
@@ -16,7 +17,7 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
             {/* Header */}
             <div className='flex justify-center items-center'>
                 <div className='flex flex-col md:flex-row items-center justify-center lg:justify-center space-y-2 lg:space-y-0 lg:space-x-3'>
-                    <img src='./multoslogo.png' alt="" className='h-16 sm:h-20 md:h-24 rounded-xl' />
+                    <img src='./multosfinal.svg' alt="logo" className='h-16 sm:h-20 md:h-24 rounded-xl' />
 
                     <div className='flex flex-col justify-start text-center lg:text-left'>
                         <h1 className='text-2xl sm:text-3xl md:text-4xl font-black text-gray-900'>Multos</h1>
@@ -63,8 +64,8 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
                         <button
                             onClick={() => setBatchOpen(true)}
                             className={`flex-1 py-3 px-6 rounded-full font-bold transition-all duration-300 ${batchOpen
-                                    ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white shadow-lg scale-105"
-                                    : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
+                                ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white shadow-lg scale-105"
+                                : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
                                 }`}
                         >
                             Manual
@@ -74,8 +75,8 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
                         <button
                             onClick={() => setBatchOpen(false)}
                             className={`flex-1 py-3 px-6 rounded-full font-bold transition-all duration-300 ${!batchOpen
-                                    ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white shadow-lg scale-105"
-                                    : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
+                                ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white shadow-lg scale-105"
+                                : "text-gray-600 hover:text-gray-800 hover:bg-white/30"
                                 }`}
                         >
                             Batch
@@ -84,10 +85,21 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
                 </div>
             </div>
 
+            <div className='flex justify-center gap-10 mt-10'>
+                <button onClick={() => setIsCustom(false)}>
+                    <p>apt</p>
+                </button>
+                <button onClick={() => setIsCustom(true)}>
+                    <p>custom</p>
+                </button>
+            </div>
+
+
+
 
             {/* Conditional Rendering */}
             <div className="mt-10">
-                {batchOpen ? <Method1 balance={balance} /> : <Method2 balance={balance} />}
+                {batchOpen ? <Method1 balance={balance} isCustom={isCustom} /> : <Method2 balance={balance} isCustom={isCustom}/>}
             </div>
 
         </div>

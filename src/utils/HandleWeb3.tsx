@@ -84,6 +84,17 @@ export const fetchToken = () => {
         }
     }
 
+    const getTokenDecimals = async (tokenAddress: string) => {
+        try {
+            const metadata = await readMetadata(tokenAddress);
+            const tokenMetadata = metadata[0] as TokenMetadata
+            return tokenMetadata.decimals
+        } catch (error) {
+            console.error("error fetching token decimals: ", error);
+            throw error
+        }
+    }
+
     const getTokenAmount = async (tokenAddress: string) => {
         if(!connected || !account?.address){
             alert(`wallet is not connected`);
@@ -107,7 +118,7 @@ export const fetchToken = () => {
         }
     }
 
-    return {readMetadata, getTokenSymbol, getTokenAmount}
+    return {readMetadata, getTokenSymbol, getTokenAmount, getTokenDecimals}
 }
 
 export const useDisperseCustomToken = () => {

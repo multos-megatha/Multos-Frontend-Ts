@@ -14,9 +14,8 @@ interface Method1Props {
 }
 
 const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
-
     const { disperseAPT, connected, account } = useDisperseAPT()
-    const { getTokenSymbol, getTokenAmount } = fetchToken()
+    const { getTokenSymbol, getTokenAmount, getTokenDecimals } = fetchToken()
     const {disperseCustomToken} = useDisperseCustomToken()
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
@@ -63,17 +62,13 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
     const [transactionHash, setTransactionHash] = useState<string>(``)
     async function handleFinalConfirm() {
-        if (!connected || !account) {
-            alert('please connect your wallet');
-            return
-        }
-
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
-
+        
+        const conversion = isCustom ? 10 ** tokenDecimals : 1e8;
         // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
         const payload = validTransfers.map(t => ({
             ...t,
-            amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
+            amount: Math.round(t.amount * conversion), // convert ke Octa (integer)
         }));
 
         let amounts: bigint[] = []
@@ -107,23 +102,23 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
     const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
-    // const [tokenAmount, setTokenAmount] = useState('');
     const [tokenAmount, setTokenAmount] = useState<number>(0);
-
+    const [tokenDecimals, setTokenDecimals] = useState<number>(0);
     const handleLoad = async () => {
         try {
             const metadata = await getTokenSymbol(inputtedTokenAddr);
             const amount = await getTokenAmount(inputtedTokenAddr);
+            const decimals = await getTokenDecimals(inputtedTokenAddr);
 
-            const convertedAmount = Number(amount) / 1e6;
+            const conversion = 10 ** Number(decimals);
+            const convertedAmount = Number(amount) / conversion;
 
-            // setTokenAmount(convertedAmount.toString());
             setTokenAmount(convertedAmount);
-            setTokenSymbol(metadata)
+            setTokenSymbol(metadata);
+            setTokenDecimals(decimals);
         } catch (error) {
             throw error
         }
-
     }
 
     const total = calculateTotal();

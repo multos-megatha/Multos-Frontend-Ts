@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
-import { useDisperseAPT, fetchToken } from '@/utils/HandleWeb3';
+import { useDisperseAPT, fetchToken, useDisperseCustomToken } from '@/utils/HandleWeb3';
 
 interface TransferItem {
     id: string;
@@ -17,6 +17,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
     const { disperseAPT, connected, account } = useDisperseAPT()
     const { getTokenSymbol, getTokenAmount } = fetchToken()
+    const {disperseCustomToken} = useDisperseCustomToken()
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -83,15 +84,24 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
             recipients.push(payload[i].address);
         }
 
-        try {
-            const txnResult = await disperseAPT(amounts, recipients);
-            console.log(txnResult)
-            console.log(typeof txnResult)
-            setTransactionHash(txnResult as string)
-            // setShowConfirmation(false);
-            // setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-        } catch (error) {
-            console.error(`transaction failed:`, error);
+        if(isCustom){
+            try {
+                const txnResult = await disperseCustomToken(inputtedTokenAddr, amounts, recipients)
+                setTransactionHash(txnResult as string)
+            } catch (error) {
+                console.log(`transaction failed: `, error)
+            }
+        } else {
+            try {
+                const txnResult = await disperseAPT(amounts, recipients);
+                console.log(txnResult)
+                console.log(typeof txnResult)
+                setTransactionHash(txnResult as string)
+                // setShowConfirmation(false);
+                // setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+            } catch (error) {
+                console.error(`transaction failed: `, error);
+            }
         }
     }
 

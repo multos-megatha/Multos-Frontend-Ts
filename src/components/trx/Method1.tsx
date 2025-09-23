@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
-import { useDisperseAPT, fetchToken } from '@/utils/HandleWeb3';
+import { useDisperseAPT, fetchToken, useDisperseCustomToken } from '@/utils/HandleWeb3';
 
 interface TransferItem {
     id: string;
@@ -14,9 +14,9 @@ interface Method1Props {
 }
 
 const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
-
     const { disperseAPT, connected, account } = useDisperseAPT()
-    const { getTokenSymbol, getTokenAmount } = fetchToken()
+    const { getTokenSymbol, getTokenAmount, getTokenDecimals } = fetchToken()
+    const {disperseCustomToken} = useDisperseCustomToken()
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -62,17 +62,13 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
     const [transactionHash, setTransactionHash] = useState<string>(``)
     async function handleFinalConfirm() {
-        if (!connected || !account) {
-            alert('please connect your wallet');
-            return
-        }
-
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
-
+        
+        const conversion = isCustom ? 10 ** tokenDecimals : 1e8;
         // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
         const payload = validTransfers.map(t => ({
             ...t,
-            amount: Math.round(t.amount * 1e8), // convert ke Octa (integer)
+            amount: Math.round(t.amount * conversion), // convert ke Octa (integer)
         }));
 
         let amounts: bigint[] = []
@@ -83,37 +79,46 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
             recipients.push(payload[i].address);
         }
 
-        try {
-            const txnResult = await disperseAPT(amounts, recipients);
-            console.log(txnResult)
-            console.log(typeof txnResult)
-            setTransactionHash(txnResult as string)
-            // setShowConfirmation(false);
-            // setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
-        } catch (error) {
-            console.error(`transaction failed:`, error);
+        if(isCustom){
+            try {
+                const txnResult = await disperseCustomToken(inputtedTokenAddr, amounts, recipients)
+                setTransactionHash(txnResult as string)
+            } catch (error) {
+                console.log(`transaction failed: `, error)
+            }
+        } else {
+            try {
+                const txnResult = await disperseAPT(amounts, recipients);
+                console.log(txnResult)
+                console.log(typeof txnResult)
+                setTransactionHash(txnResult as string)
+                // setShowConfirmation(false);
+                // setTransfers([{ id: '1', address: '', amount: 0 }]); // reset
+            } catch (error) {
+                console.error(`transaction failed: `, error);
+            }
         }
     }
 
     const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
-    // const [tokenAmount, setTokenAmount] = useState('');
     const [tokenAmount, setTokenAmount] = useState<number>(0);
-
+    const [tokenDecimals, setTokenDecimals] = useState<number>(0);
     const handleLoad = async () => {
         try {
             const metadata = await getTokenSymbol(inputtedTokenAddr);
             const amount = await getTokenAmount(inputtedTokenAddr);
+            const decimals = await getTokenDecimals(inputtedTokenAddr);
 
-            const convertedAmount = Number(amount) / 1e6;
+            const conversion = 10 ** Number(decimals);
+            const convertedAmount = Number(amount) / conversion;
 
-            // setTokenAmount(convertedAmount.toString());
             setTokenAmount(convertedAmount);
-            setTokenSymbol(metadata)
+            setTokenSymbol(metadata);
+            setTokenDecimals(decimals);
         } catch (error) {
             throw error
         }
-
     }
 
     const total = calculateTotal();

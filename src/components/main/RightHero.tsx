@@ -26,7 +26,7 @@ const RightHero = () => {
                                 subtitle="See what's Multos all about"
                                 thumbnail={
                                     <img
-                                        src="https://i.ytimg.com/vi/HRZ5OnWbLu4/maxresdefault.jpg"
+                                        src="./thumbnail.png"
                                         className="w-full h-full object-cover"
                                         alt=""
                                     />
@@ -39,7 +39,7 @@ const RightHero = () => {
                                 subtitle="See what's Multos all about"
                                 thumbnail={
                                     <img
-                                        src="https://i.ytimg.com/vi/HRZ5OnWbLu4/maxresdefault.jpg"
+                                        src="./thumbnail.png"
                                         className="w-full h-full object-cover"
                                         alt=""
                                     />

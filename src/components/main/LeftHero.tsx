@@ -211,7 +211,7 @@ const LeftHero = () => {
                 </motion.div>
             )}
 
-            {loading && <LoaderPopup onClose={() => setLoading(false)} />}
+            {loading && <LoaderPopup onClose={() => setLoading(false)} message='Connecting Wallet...' />}
 
 
         </div>

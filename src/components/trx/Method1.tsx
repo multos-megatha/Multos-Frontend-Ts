@@ -113,6 +113,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
     const [tokenAmount, setTokenAmount] = useState<number>(0);
     const [tokenDecimals, setTokenDecimals] = useState<number>(0);
     const handleLoad = async () => {
+        setLoading(true)
         try {
             const metadata = await getTokenSymbol(inputtedTokenAddr);
             const amount = await getTokenAmount(inputtedTokenAddr);
@@ -128,6 +129,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
         } catch (error) {
             throw error
         }
+        setLoading(false)
     }
 
     const total = calculateTotal();
@@ -258,9 +260,8 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                         </button>
                     </div>
 
-                    {loading && (
-                        <LoaderPopup onClose={() => setLoading(false)} message="Confirming transaction..." />
-                    )}
+                   
+
 
 
                     {transactionHash && (
@@ -288,6 +289,12 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                     )}
 
                 </div>
+                {loading && (
+  <LoaderPopup
+      onClose={() => setLoading(false)}
+      message="Confirming transaction..."
+  />
+)}
             </div>
         );
     }
@@ -306,27 +313,37 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                             type="text"
                             placeholder="Enter token contract address"
                             className="flex-grow min-w-0 px-3 py-2 border border-gray-300 rounded-lg 
-                   focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-sm"
+               focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-sm"
                             value={inputtedTokenAddr}
                             onChange={(e) => setInputtedTokenAddr(e.target.value)}
                         />
                         <button
-                            className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 
-                   transition font-medium text-sm whitespace-nowrap"
                             onClick={handleLoad}
+                            disabled={!inputtedTokenAddr} // disable jika kosong
+                            className={`px-5 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition
+                                ${inputtedTokenAddr
+                                    ? "bg-red-600 text-white hover:bg-red-700"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                }`}
                         >
                             Load
                         </button>
                     </div>
 
-                    {isLoaded && (
-                        <div className="text-sm text-gray-600">
-                            You have{" "}
-                            <span className="font-semibold text-gray-900">
-                                {tokenAmount} {tokenSymbol}
-                            </span>
-                        </div>
-                    )}
+
+
+                    <div className="text-sm text-gray-600">
+                        {loading ? (
+                            <span className="font-semibold text-gray-900">Loading, please wait...</span>
+                        ) : isLoaded ? (
+                            <>
+                                You have{" "}
+                                <span className="font-semibold text-gray-900">
+                                    {tokenAmount} {tokenSymbol}
+                                </span>
+                            </>
+                        ) : null}
+                    </div>
                 </div>
             )}
 
@@ -451,6 +468,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                     Continue
                 </button>
             </div>
+
 
         </div>
     );

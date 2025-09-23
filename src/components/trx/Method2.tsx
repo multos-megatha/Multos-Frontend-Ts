@@ -20,7 +20,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     const feePercentage = 0.01; // 1%
     const [isLoaded, setIsLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
-    
+
 
 
     const { getTokenAmount, getTokenSymbol, getTokenDecimals } = fetchToken();
@@ -166,7 +166,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     };
 
     const isDisabled =
-  (isCustom ? remainingToken < 0 : remainingAPT < 0) || !!transactionHash;
+        (isCustom ? remainingToken < 0 : remainingAPT < 0) || !!transactionHash;
 
     if (showConfirmation) {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
@@ -263,17 +263,21 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                             onClick={handleFinalConfirm}
                             disabled={isDisabled}
                             className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${!isDisabled
-                                    ? "bg-red-600 text-white hover:bg-red-700"
-                                    : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
+                                ? "bg-red-600 text-white hover:bg-red-700"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
                                 }`}
                         >
                             Confirm Transfer
                         </button>
+                         {loading && (
+                        <LoaderPopup
+                            onClose={() => setLoading(false)}
+                            message="Confirming transaction..."
+                        />
+                    )}
                     </div>
 
-                    {loading && (
-                        <LoaderPopup onClose={() => setLoading(false)} message="Confirming transaction..." />
-                    )}
+
 
                     {transactionHash && (
                         <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">

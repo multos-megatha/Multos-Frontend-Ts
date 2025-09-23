@@ -6,9 +6,10 @@ import { X } from "lucide-react";
 
 type LoaderPopupProps = {
   onClose: () => void;
+  message?: string; // props tambahan
 };
 
-const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose }) => {
+const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -23,7 +24,7 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose }) => {
           initial={{ y: 50, opacity: 0, scale: 0.9 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 50, opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Tombol close */}
@@ -44,14 +45,14 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose }) => {
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
           />
 
-          {/* Teks */}
+          {/* Teks (pakai props.message) */}
           <motion.p
-            className="mt-5 text-gray-800 font-semibold text-lg tracking-wide"
+            className="mt-5 text-gray-800 font-semibold text-lg tracking-wide text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Please wait...
+            {message || "Please wait..."}
           </motion.p>
         </motion.div>
       </motion.div>

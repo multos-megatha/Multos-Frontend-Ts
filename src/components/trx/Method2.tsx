@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDisperseAPT, useDisperseCustomToken, fetchToken } from '@/utils/HandleWeb3';
+import LoaderPopup from '../LoaderPopup';
 
 interface TransferItem {
     id: string;
@@ -17,6 +18,10 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [textareaValue, setTextareaValue] = useState('');
     const feePercentage = 0.01; // 1%
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
+    
+
 
     const { getTokenAmount, getTokenSymbol, getTokenDecimals } = fetchToken();
     const { account, connected, disperseAPT } = useDisperseAPT();
@@ -38,6 +43,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
 
     const handleBack = () => {
         setShowConfirmation(false);
+        setTransactionHash(null);
     };
 
     const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
@@ -56,13 +62,16 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
             setTokenAmount(convertAmount);
             setTokenSymbol(symbol);
             setTokenDecimals(decimals);
+            setIsLoaded(true);
+
         } catch (error) {
             throw error
         }
     }
 
-    const [transactionHash, setTransactionHash] = useState<string>(``);
+    const [transactionHash, setTransactionHash] = useState<string | null>(null);
     const handleFinalConfirm = async () => {
+        setLoading(true);
         // konversi semua amount ke Octa (1 APT = 1e8 Octa)
         const conversion = isCustom ? 10 ** tokenDecimals : 1e8;
         const payload = transfers.map(t => ({
@@ -97,6 +106,8 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
         // setShowConfirmation(false);
         // setTransfers([]);
         // setTextareaValue('');
+        setLoading(false);
+
     };
 
 
@@ -154,6 +165,8 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
         return num.toFixed(decimals).replace(/\.?0+$/, ""); // hapus trailing zero
     };
 
+    const isDisabled =
+  (isCustom ? remainingToken < 0 : remainingAPT < 0) || !!transactionHash;
 
     if (showConfirmation) {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
@@ -248,16 +261,44 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                         </button>
                         <button
                             onClick={handleFinalConfirm}
-                            disabled={remainingAPT < 0}
-                            className={`flex-1 px-4 py-2 rounded-lg font-medium ${remainingAPT >= 0
-                                ? 'bg-red-600 text-white hover:bg-red-700'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            disabled={isDisabled}
+                            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${!isDisabled
+                                    ? "bg-red-600 text-white hover:bg-red-700"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
                                 }`}
                         >
                             Confirm Transfer
                         </button>
                     </div>
-                    <p>transaction successful: {transactionHash}</p>
+
+                    {loading && (
+                        <LoaderPopup onClose={() => setLoading(false)} message="Confirming transaction..." />
+                    )}
+
+                    {transactionHash && (
+                        <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                            <h3 className="text-sm font-medium text-green-800 mb-2">
+                                Transaction Successful
+                            </h3>
+
+                            <div className="flex items-center justify-between">
+                                {/* Hash dengan truncate */}
+                                <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
+                                    {transactionHash}
+                                </span>
+
+
+                                {/* Copy button */}
+                                <button
+                                    onClick={() => navigator.clipboard.writeText(transactionHash)}
+                                    className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         );
@@ -290,12 +331,14 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                         </button>
                     </div>
 
-                    <div className="text-sm text-gray-600">
-                        You have{" "}
-                        <span className="font-semibold text-gray-900">
-                            {tokenAmount} {tokenSymbol}
-                        </span>
-                    </div>
+                    {isLoaded && (
+                        <div className="text-sm text-gray-600">
+                            You have{" "}
+                            <span className="font-semibold text-gray-900">
+                                {tokenAmount} {tokenSymbol}
+                            </span>
+                        </div>
+                    )}
                 </div>
             )}
 

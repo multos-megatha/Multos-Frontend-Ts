@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* tombol */
+.switch-btn {
+  @apply relative z-20 flex-1 py-2 font-semibold text-gray-600 uppercase transition-colors duration-300 hover:text-red-500;
+}
+
+/* highlight background (gerak kiri/kanan) */
+.switch-highlight {
+  @apply z-10;
+}
+
+/* tambahan efek after (opsional, glow tipis di bawah) */
+.switch-btn::after {
+  content: "";
+  @apply absolute -bottom-1 left-0 h-[2px] w-0 bg-red-600 transition-all duration-300;
+}
+
+.switch-btn.text-red-600::after {
+  @apply w-full;
+}

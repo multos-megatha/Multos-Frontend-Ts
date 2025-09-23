@@ -9,7 +9,7 @@ type VideoProps = {
 
 const VideoCard = ({ title, subtitle, thumbnail }: VideoProps) => {
     return (
-        <div className='bg-white rounded-2xl p-4 border hover:border-[#E03838] shadow-md transition-all duration-300'>
+        <div className='bg-white rounded-2xl p-4 border hover:border-[#E03838] shadow-md transition-all duration-300 hover:scale-[1.02]'>
             <div className='rounded-xl aspect-[16/9] flex items-center justify-center mb-1 relative overflow-hidden group'>
                 <div className='absolute inset-0'>
                     {thumbnail}

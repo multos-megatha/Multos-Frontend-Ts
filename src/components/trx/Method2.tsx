@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDisperseAPT, useDisperseCustomToken, fetchToken } from '@/utils/HandleWeb3';
 import LoaderPopup from '../LoaderPopup';
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TransferItem {
     id: string;
@@ -51,6 +52,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     const [tokenAmount, setTokenAmount] = useState<number>(0);
     const [tokenDecimals, setTokenDecimals] = useState<number>(0);
     const handleLoad = async () => {
+        setLoading(true)
         try {
             const symbol = await getTokenSymbol(inputtedTokenAddr);
             const amount = await getTokenAmount(inputtedTokenAddr);
@@ -67,6 +69,8 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
         } catch (error) {
             throw error
         }
+        setLoading(false)
+
     }
 
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
@@ -269,39 +273,48 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                         >
                             Confirm Transfer
                         </button>
-                         {loading && (
-                        <LoaderPopup
-                            onClose={() => setLoading(false)}
-                            message="Confirming transaction..."
-                        />
-                    )}
+                        {loading && (
+                            <LoaderPopup
+                                onClose={() => setLoading(false)}
+                                message="Confirming transaction..."
+                            />
+                        )}
                     </div>
 
 
 
                     {transactionHash && (
-                        <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                            <h3 className="text-sm font-medium text-green-800 mb-2">
-                                Transaction Successful
-                            </h3>
+                        <AnimatePresence>
+                            <motion.div
+                                key="tx-success"
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200 shadow-sm"
+                            >
+                                <h3 className="text-sm font-medium text-green-800 mb-2">
+                                    Transaction Successful
+                                </h3>
 
-                            <div className="flex items-center justify-between">
-                                {/* Hash dengan truncate */}
-                                <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
-                                    {transactionHash}
-                                </span>
+                                <div className="flex items-center justify-between">
+                                    {/* Hash dengan truncate */}
+                                    <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
+                                        {transactionHash}
+                                    </span>
 
-
-                                {/* Copy button */}
-                                <button
-                                    onClick={() => navigator.clipboard.writeText(transactionHash)}
-                                    className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                                >
-                                    Copy
-                                </button>
-                            </div>
-                        </div>
+                                    {/* Copy button */}
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(transactionHash)}
+                                        className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
                     )}
+
 
                 </div>
             </div>
@@ -313,7 +326,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
             {/* ini tempat form */}
             {isCustom && (
                 <div className="bg-white  space-y-4 mb-8">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-2xl font-bold text-gray-900">
                         Token Address
                     </h2>
 
@@ -327,22 +340,47 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                             onChange={(e) => setInputtedTokenAddr(e.target.value)}
                         />
                         <button
-                            className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 
-                   transition font-medium text-sm whitespace-nowrap"
                             onClick={handleLoad}
+                            disabled={!inputtedTokenAddr} // disable jika kosong
+                            className={`px-5 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition
+                                ${inputtedTokenAddr
+                                    ? "bg-red-600 text-white hover:bg-red-700"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                }`}
                         >
                             Load
                         </button>
                     </div>
 
-                    {isLoaded && (
-                        <div className="text-sm text-gray-600">
-                            You have{" "}
-                            <span className="font-semibold text-gray-900">
-                                {tokenAmount} {tokenSymbol}
-                            </span>
-                        </div>
-                    )}
+                    <div className="text-sm text-gray-600">
+                        {loading ? (
+                            <motion.span
+                                key="loading"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.25, ease: "easeOut" }}
+                                className="font-semibold text-gray-900"
+                            >
+                                Loading, please wait...
+                            </motion.span>
+                        ) : isLoaded ? (
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key="loaded"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                >
+                                    You have{" "}
+                                    <span className="font-semibold text-gray-900">
+                                        {tokenAmount} {tokenSymbol}
+                                    </span>
+                                </motion.div>
+                            </AnimatePresence>
+                        ) : null}
+                    </div>
                 </div>
             )}
 

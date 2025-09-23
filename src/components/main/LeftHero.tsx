@@ -66,7 +66,15 @@ const LeftHero = () => {
                     {wallets.filter((wallet) => wallet.name === "Continue with Google").map((wallet) => (
                         <button
                             key={wallet.name}
-                            onClick={() => connect(wallet.name)}
+                            onClick={async () => {
+                                        setLoading(true);
+                                        try {
+                                            await connect(wallet.name);
+                                        } finally {
+                                            setLoading(false);
+                                            setIsOpen(false);
+                                        }
+                                    }}
                             className="w-full lg:max-w-[450px] group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -117,7 +125,7 @@ const LeftHero = () => {
                                     <div className="flex-1 space-y-2 text-center md:text-left">
                                         {/* Title + Stats */}
                                         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
-                                            <h3 className="text-base sm:text-lg md:text-[1.1rem] font-semibold text-gray-800 group-hover:text-pink-600 transition-colors duration-300 leading-snug">
+                                            <h3 className="text-base sm:text-lg md:text-[1.1rem] font-semibold text-gray-800  transition-colors duration-300 leading-snug">
                                                 {feature.title}
                                             </h3>
                                             <div className="px-2.5 py-0.5 mx-auto md:mx-0 bg-white/80 backdrop-blur-sm rounded-full border border-pink-100 shadow-sm w-fit">

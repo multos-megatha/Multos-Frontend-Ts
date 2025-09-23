@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
 import { useDisperseAPT, fetchToken, useDisperseCustomToken } from '@/utils/HandleWeb3';
 import LoaderPopup from '../LoaderPopup';
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TransferItem {
     id: string;
@@ -160,7 +161,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
 
         return (
-            <div className="max-w-2xl mx-auto py-6">
+            <div className="max-w-2xl mx-auto py-4">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800">Confirm</h2>
 
                 <div className="space-y-4">
@@ -260,41 +261,48 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                         </button>
                     </div>
 
-                   
-
 
 
                     {transactionHash && (
-                        <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                            <h3 className="text-sm font-medium text-green-800 mb-2">
-                                Transaction Successful
-                            </h3>
+                        <AnimatePresence>
+                            <motion.div
+                                key="tx-success"
+                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200 shadow-sm"
+                            >
+                                <h3 className="text-sm font-medium text-green-800 mb-2">
+                                    Transaction Successful
+                                </h3>
 
-                            <div className="flex items-center justify-between">
-                                {/* Hash dengan truncate */}
-                                <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
-                                    {transactionHash}
-                                </span>
+                                <div className="flex items-center justify-between">
+                                    {/* Hash dengan truncate */}
+                                    <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
+                                        {transactionHash}
+                                    </span>
 
-
-                                {/* Copy button */}
-                                <button
-                                    onClick={() => navigator.clipboard.writeText(transactionHash)}
-                                    className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                                >
-                                    Copy
-                                </button>
-                            </div>
-                        </div>
+                                    {/* Copy button */}
+                                    <button
+                                        onClick={() => navigator.clipboard.writeText(transactionHash)}
+                                        className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
                     )}
 
                 </div>
+
                 {loading && (
-  <LoaderPopup
-      onClose={() => setLoading(false)}
-      message="Confirming transaction..."
-  />
-)}
+                    <LoaderPopup
+                        onClose={() => setLoading(false)}
+                        message="Confirming transaction..."
+                    />
+                )}
             </div>
         );
     }
@@ -304,7 +312,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
             {isCustom && (
                 <div className="bg-white space-y-4 mb-8">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                    <h2 className="text-2xl font-bold text-gray-900">
                         Token Address
                     </h2>
 
@@ -334,16 +342,34 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
                     <div className="text-sm text-gray-600">
                         {loading ? (
-                            <span className="font-semibold text-gray-900">Loading, please wait...</span>
+                            <motion.span
+                                key="loading"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.25, ease: "easeOut" }}
+                                className="font-semibold text-gray-900"
+                            >
+                                Loading, please wait...
+                            </motion.span>
                         ) : isLoaded ? (
-                            <>
-                                You have{" "}
-                                <span className="font-semibold text-gray-900">
-                                    {tokenAmount} {tokenSymbol}
-                                </span>
-                            </>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key="loaded"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                >
+                                    You have{" "}
+                                    <span className="font-semibold text-gray-900">
+                                        {tokenAmount} {tokenSymbol}
+                                    </span>
+                                </motion.div>
+                            </AnimatePresence>
                         ) : null}
                     </div>
+
                 </div>
             )}
 

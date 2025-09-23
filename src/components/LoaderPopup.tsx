@@ -13,7 +13,7 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md w-full h-full"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md w-full h-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -25,7 +25,10 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
         />
         
         <motion.div 
-          className="relative bg-gradient-to-br bg-white rounded-2xl p-8 shadow-2xl border border-slate-700/50 max-w-xs w-full mx-4"
+          className="relative bg-white rounded-3xl p-8 shadow-2xl border border-red-100/50 max-w-xs w-full mx-4"
+          style={{
+            background: "linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(254,242,242,0.95) 100%)"
+          }}
           initial={{ opacity: 0, scale: 0.8, y: 50 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 50 }}
@@ -39,7 +42,7 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
           {/* Close Button */}
           <motion.button
             onClick={onClose}
-            className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors duration-200 p-1 hover:bg-slate-700/50 rounded-lg"
+            className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors duration-200 p-1 hover:bg-red-50 rounded-lg"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -63,9 +66,23 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
               <motion.img
                 src="./multosloading.gif"
                 alt="Loading..."
-                className="w-24 h-24 object-contain drop-shadow-lg"
+                className="w-28 h-28 object-contain drop-shadow-xl"
                 animate={{ 
-                  y: [0, -5, 0],
+                  y: [0, -8, 0],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              
+              {/* Enhanced pulsing glow effect */}
+              <motion.div 
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-red-400/30 to-red-500/30 blur-2xl -z-10"
+                animate={{ 
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 0.8, 0.4]
                 }}
                 transition={{
                   duration: 2,
@@ -74,33 +91,33 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
                 }}
               />
               
-              {/* Pulsing glow effect */}
-              <motion.div 
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-red-400/20 to-rose-500/20 blur-xl -z-10"
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3]
+              {/* Rotating ring around GIF */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-transparent"
+                style={{
+                  background: "conic-gradient(from 0deg, transparent, rgba(239, 68, 68, 0.3), transparent)"
                 }}
+                animate={{ rotate: 360 }}
                 transition={{
-                  duration: 2,
+                  duration: 4,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "linear"
                 }}
               />
             </motion.div>
 
             {/* Message with stagger animation */}
             <motion.div 
-              className="text-center space-y-5"
+              className="text-center space-y-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <motion.p 
-                className="text-black font-medium text-lg"
+                className="text-gray-800 font-semibold text-lg"
                 animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{
-                  duration: 1.5,
+                  duration: 1.8,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
@@ -109,19 +126,20 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
               </motion.p>
               
               {/* Animated bouncing dots */}
-              <div className="flex justify-center space-x-1">
+              <div className="flex justify-center space-x-1.5">
                 {[0, 1, 2].map((index) => (
                   <motion.div
                     key={index}
-                    className="w-2 h-2 bg-red-400 rounded-full"
+                    className="w-2.5 h-2.5 bg-gradient-to-r from-red-500 to-red-500 rounded-full shadow-sm"
                     animate={{ 
-                      y: [0, -8, 0],
-                      opacity: [0.5, 1, 0.5]
+                      y: [0, -10, 0],
+                      opacity: [0.6, 1, 0.6],
+                      scale: [1, 1.2, 1]
                     }}
                     transition={{
-                      duration: 0.6,
+                      duration: 0.8,
                       repeat: Infinity,
-                      delay: index * 0.1,
+                      delay: index * 0.15,
                       ease: "easeInOut"
                     }}
                   />
@@ -129,47 +147,76 @@ const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose, message }) => {
               </div>
             </motion.div>
 
-            {/* Animated progress bar */}
-            {/* <motion.div 
-              className="w-full bg-slate-700 rounded-full h-1 overflow-hidden"
+            {/* Enhanced progress bar */}
+            <motion.div 
+              className="w-full bg-red-100 rounded-full h-1.5 overflow-hidden shadow-inner"
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               <motion.div 
-                className="h-full bg-gradient-to-r from-red-400 to-red-500 rounded-full"
+                className="h-full bg-gradient-to-r from-red-500 via-red-500 to-red-500 rounded-full shadow-sm"
                 animate={{ 
                   x: ['-100%', '100%'],
-                  opacity: [0.5, 1, 0.5]
+                  opacity: [0.7, 1, 0.7]
                 }}
                 transition={{
-                  duration: 1.5,
+                  duration: 2,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "easeInOut"
                 }}
+                style={{ backgroundSize: "200% 100%" }}
               />
-            </motion.div> */}
+            </motion.div>
           </div>
 
-          {/* Subtle animated background pattern */}
+          {/* Enhanced animated background pattern */}
           <motion.div 
-            className="absolute inset-0 opacity-5 pointer-events-none rounded-2xl"
+            className="absolute inset-0 opacity-5 pointer-events-none rounded-3xl overflow-hidden"
             animate={{ 
               background: [
-                'radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.1) 0%, transparent 70%)',
-                'radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 70%)',
-                'radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.1) 0%, transparent 70%)'
+                'radial-gradient(circle at 30% 30%, rgba(239, 68, 68, 0.15) 0%, transparent 60%)',
+                'radial-gradient(circle at 70% 70%, rgba(244, 63, 94, 0.15) 0%, transparent 60%)',
+                'radial-gradient(circle at 30% 30%, rgba(239, 68, 68, 0.15) 0%, transparent 60%)'
               ]
             }}
             transition={{
-              duration: 3,
+              duration: 4,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
+
+          {/* Decorative corner elements */}
+          <div className="absolute top-3 left-3 w-2 h-2 bg-gradient-to-r from-red-400 to-red-400 rounded-full opacity-40"></div>
+          <div className="absolute bottom-3 right-3 w-1.5 h-1.5 bg-gradient-to-r from-red-400 to-red-400 rounded-full opacity-30"></div>
+          
+          {/* Side decorative dots */}
+          <div className="absolute top-1/2 left-2 transform -translate-y-1/2 flex flex-col space-y-2 opacity-20">
+            {[0, 1, 2].map((index) => (
+              <motion.div
+                key={index}
+                className="w-1 h-1 bg-red-400 rounded-full"
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.2, 0.6, 0.2]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: index * 0.3,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Subtle border glow */}
+          <div className="absolute inset-0 rounded-3xl border border-gradient-to-r from-red-200/50 to-red-200/50 pointer-events-none"></div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
+
   );
 };
 

@@ -16,7 +16,7 @@ interface Method1Props {
 const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
     const { disperseAPT, connected, account } = useDisperseAPT()
     const { getTokenSymbol, getTokenAmount, getTokenDecimals } = fetchToken()
-    const {disperseCustomToken} = useDisperseCustomToken()
+    const { disperseCustomToken } = useDisperseCustomToken()
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -63,7 +63,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
     const [transactionHash, setTransactionHash] = useState<string>(``)
     async function handleFinalConfirm() {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
-        
+
         const conversion = isCustom ? 10 ** tokenDecimals : 1e8;
         // Data yang dikirim ke blockchain -> dikali 10^8 (Octa)
         const payload = validTransfers.map(t => ({
@@ -79,7 +79,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
             recipients.push(payload[i].address);
         }
 
-        if(isCustom){
+        if (isCustom) {
             try {
                 const txnResult = await disperseCustomToken(inputtedTokenAddr, amounts, recipients)
                 setTransactionHash(txnResult as string)
@@ -145,55 +145,86 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
 
         return (
-            <div className="max-w-2xl mx-auto p-6">
+            <div className="max-w-2xl mx-auto py-6">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800">Confirm</h2>
 
                 <div className="space-y-4">
                     {/* daftar transfer */}
                     {validTransfers.map((transfer) => (
-                        <div key={transfer.id} className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div
+                            key={transfer.id}
+                            className="flex justify-between items-center py-2 border-b border-gray-100"
+                        >
                             <span className="font-mono text-sm text-gray-700 flex-1 mr-4 break-all">
                                 {transfer.address}
                             </span>
-                            <span className="font-semibold text-gray-900 whitespace-nowrap">
-                                {transfer.amount} {isCustom ? tokenSymbol : "APT"}
-                            </span>
+
+                            <div className="flex flex-wrap justify-end max-w-[50%]">
+                                <span className="font-semibold text-gray-900 truncate min-w-0 text-right">
+                                    {transfer.amount}
+                                </span>
+                                <span className="ml-1 font-bold text-gray-600 shrink-0">
+                                    {isCustom ? tokenSymbol : "APT"}
+                                </span>
+                            </div>
                         </div>
                     ))}
 
                     <div className="mt-6 space-y-3 text-right">
                         <div className="flex justify-between">
                             <span className="font-medium">Total</span>
-                            <span className="font-semibold">{total} {isCustom ? tokenSymbol : "APT"}</span>
+                            <div className="flex flex-wrap justify-end max-w-[60%]">
+                                <span className="font-semibold truncate min-w-0 text-right">
+                                    {total}
+                                </span>
+                                <span className="ml-1 font-bold shrink-0">
+                                    {isCustom ? tokenSymbol : "APT"}
+                                </span>
+                            </div>
                         </div>
+
                         <div className="flex justify-between">
-                            <span className="font-medium">Fee {(feePercentage * 100)}%</span>
-                            <span className="font-semibold">{shortenNumber(fee)} {isCustom ? tokenSymbol : "APT"}</span>
+                            <span className="font-medium">Fee {feePercentage * 100}%</span>
+                            <div className="flex flex-wrap justify-end max-w-[60%]">
+                                <span className="font-semibold truncate min-w-0 text-right">
+                                    {shortenNumber(fee)}
+                                </span>
+                                <span className="ml-1 font-bold shrink-0">
+                                    {isCustom ? tokenSymbol : "APT"}
+                                </span>
+                            </div>
                         </div>
+
                         <div className="flex justify-between">
                             <span className="font-medium">Your Balance</span>
-                            <span className="font-semibold">
-                                {isCustom
-                                    ? `${tokenAmount} ${tokenSymbol}`
-                                    : `${shortenNumber(balance)} APT`}
-                            </span>
+                            <div className="flex flex-wrap justify-end max-w-[60%]">
+                                <span className="font-semibold truncate min-w-0 text-right">
+                                    {isCustom ? tokenAmount : shortenNumber(balance)}
+                                </span>
+                                <span className="ml-1 font-bold shrink-0">
+                                    {isCustom ? tokenSymbol : "APT"}
+                                </span>
+                            </div>
                         </div>
 
                         <div className="flex justify-between border-t pt-2">
                             <span className="font-medium">Remaining</span>
-                            <span
-                                className={`font-semibold ${(isCustom ? remainingToken : remainingAPT) >= 0
-                                        ? "text-green-600"
-                                        : "text-red-600"
+                            <div
+                                className={`flex flex-wrap justify-end max-w-[60%] ${(isCustom ? remainingToken : remainingAPT) >= 0
+                                    ? "text-green-600"
+                                    : "text-red-600"
                                     }`}
                             >
-                                {isCustom
-                                    ? `${remainingToken} ${tokenSymbol}`
-                                    : `${shortenNumber(remainingAPT)} APT`}
-                            </span>
+                                <span className="font-semibold truncate min-w-0 text-right">
+                                    {isCustom ? remainingToken : shortenNumber(remainingAPT)}
+                                </span>
+                                <span className="ml-1 font-bold shrink-0">
+                                    {isCustom ? tokenSymbol : "APT"}
+                                </span>
+                            </div>
                         </div>
-
                     </div>
+
 
                     <div className="flex flex-col md:flex-row gap-3 mt-6">
                         <button
@@ -213,39 +244,72 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                             Confirm Transfer
                         </button>
                     </div>
-                    <p>transaction successful: {transactionHash}</p>
+
+                    {transactionHash && (
+                        <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                            <h3 className="text-sm font-medium text-green-800 mb-2">
+                                Transaction Successful
+                            </h3>
+
+                            <div className="flex items-center justify-between">
+                                {/* Hash dengan truncate */}
+                                <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
+                                    {transactionHash}
+                                </span>
+
+
+                                {/* Copy button */}
+                                <button
+                                    onClick={() => navigator.clipboard.writeText(transactionHash)}
+                                    className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-2xl mx-auto p-6 rounded-lg ">
-
+        <div className="max-w-2xl mx-auto pb-6 rounded-lg ">
 
             {isCustom && (
-                <>
-                    <h2 className="text-2xl font-bold text-gray-800">Token Address</h2>
-                    <div className="flex flex-row items-center gap-2 w-full mb-5">
+                <div className="bg-white space-y-4 mb-8">
+                    <h2 className="text-xl font-semibold text-gray-900">
+                        Token Address
+                    </h2>
+
+                    <div className="flex flex-col sm:flex-row items-stretch gap-3">
                         <input
                             type="text"
                             placeholder="Enter token contract address"
-                            className="flex-grow min-w-0 px-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-xs md:text-sm"
+                            className="flex-grow min-w-0 px-3 py-2 border border-gray-300 rounded-lg 
+                   focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-sm"
                             value={inputtedTokenAddr}
                             onChange={(e) => setInputtedTokenAddr(e.target.value)}
                         />
                         <button
-                            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium text-sm"
+                            className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 
+                   transition font-medium text-sm whitespace-nowrap"
                             onClick={handleLoad}
                         >
                             Load
                         </button>
                     </div>
-                    <p>
-                        you have {tokenAmount} {tokenSymbol}
-                    </p>
-                </>
+
+                    <div className="text-sm text-gray-600">
+                        You have{" "}
+                        <span className="font-semibold text-gray-900">
+                            {tokenAmount} {tokenSymbol}
+                        </span>
+                    </div>
+                </div>
             )}
+
 
 
 
@@ -304,29 +368,52 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
             </div>
 
             <div className="mt-6 p-4 bg-red-50 rounded-lg">
+                {/* Amount */}
                 <div className="flex justify-between items-center text-sm">
                     <span className="font-medium">Amount to send:</span>
-                    <span className="font-bold text-black">{total} {isCustom ? tokenSymbol : "APT"}</span>
+                    <div className="flex flex-wrap justify-end max-w-[60%]">
+                        <span className="font-bold text-black truncate text-right min-w-0">
+                            {total}
+                        </span>
+                        <span className="ml-1 font-bold text-gray-600 shrink-0">
+                            {isCustom ? tokenSymbol : "APT"}
+                        </span>
+                    </div>
                 </div>
+
+                {/* Fee */}
                 <div className="flex justify-between items-center text-sm mt-1">
-                    <span className="font-medium">Estimated fee (1%):</span>
-                    <span className="font-bold text-black">
-                        {shortenNumber(fee)} {isCustom ? tokenSymbol : "APT"}
-                    </span>
+                    <span className="font-medium">Fee (1%):</span>
+                    <div className="flex flex-wrap justify-end max-w-[60%]">
+                        <span className="font-bold text-black truncate text-right min-w-0">
+                            {shortenNumber(fee)}
+                        </span>
+                        <span className="ml-1 font-bold text-gray-600 shrink-0">
+                            {isCustom ? tokenSymbol : "APT"}
+                        </span>
+                    </div>
                 </div>
+
+                {/* Remaining */}
                 <div className="flex justify-between items-center text-sm mt-1">
                     <span className="font-medium">Remaining balance:</span>
-                    <span
-                        className={`font-bold ${(isCustom ? remainingToken : remainingAPT) >= 0
+                    <div
+                        className={`flex flex-wrap justify-end max-w-[60%] ${(isCustom ? remainingToken : remainingAPT) >= 0
                             ? "text-green-600"
                             : "text-red-600"
                             }`}
                     >
-                        {shortenNumber(isCustom ? remainingToken : remainingAPT)}{" "}
-                        {isCustom ? tokenSymbol : "APT"}
-                    </span>
+                        <span className="font-bold truncate text-right min-w-0">
+                            {shortenNumber(isCustom ? remainingToken : remainingAPT)}
+                        </span>
+                        <span className="ml-1 font-bold shrink-0">
+                            {isCustom ? tokenSymbol : "APT"}
+                        </span>
+                    </div>
                 </div>
             </div>
+
+
 
             <div className="flex gap-3 mt-6">
                 <button

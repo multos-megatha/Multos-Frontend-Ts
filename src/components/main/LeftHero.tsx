@@ -6,6 +6,8 @@ import { keyFeatures, wallets } from '@/constants'
 import { useState } from 'react'
 import { useWallet } from '@aptos-labs/wallet-adapter-react'
 import LoaderPopup from '../LoaderPopup'
+import { motion } from "framer-motion";
+import { containerVariants, itemVariants } from '@/utils/motion'
 
 const LeftHero = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -17,10 +19,12 @@ const LeftHero = () => {
 
     return (
         <div className='col-span-12 lg:col-span-8 p-4 md:px-8'>
-            <div className='flex flex-col items-center text-center'>
+            <motion.div className='flex flex-col items-center text-center'
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible">
 
-                {/* Logo & Title */}
-                <div className='flex justify-center items-center'>
+                <motion.div variants={itemVariants} className='flex justify-center items-center'>
                     <div className='flex flex-col md:flex-row items-center justify-center lg:justify-center space-y-2 lg:space-y-0 lg:space-x-3'>
                         <img src='./multosfinal.svg' alt="" className='h-16 sm:h-20 md:h-24 rounded-xl' />
 
@@ -34,44 +38,39 @@ const LeftHero = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
-                {/* Main Heading */}
-                <div>
-                    <div className='space-y-6 text-center mt-4 md:mt-10'>
-                        <div className='space-y-4'>
 
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900">
-                                Send to Thousands,
-                                <br />
-                                <span className="bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 bg-clip-text text-transparent">
-                                    In One Transaction
-                                </span>
+                <motion.div variants={itemVariants} className='space-y-6 text-center mt-4 md:mt-10'>
+                    <div className='space-y-4'>
 
-                            </h2>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-gray-900">
+                            Send to Thousands,
+                            <br />
+                            <span className="bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 bg-clip-text text-transparent">
+                                In One Transaction
+                            </span>
 
-                            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                                The fastest, most secure, and cost-efficient way to distribute tokens on the Aptos blockchain.
-                            </p>
+                        </h2>
 
-                        </div>
+                        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            The fastest, most secure, and cost-efficient way to distribute tokens on the Aptos blockchain.
+                        </p>
+
                     </div>
-                </div>
+                </motion.div>
 
 
-                {/* Button */}
-                <div className='flex flex-col items-center justify-center mt-6 md:mt-9 gap-3 w-full md:mb-9'>
 
+                <motion.div variants={itemVariants} className='flex flex-col items-center justify-center mt-6 md:mt-9 gap-3 w-full md:mb-9'>
                     {wallets.filter((wallet) => wallet.name === "Continue with Google").map((wallet) => (
                         <button
                             key={wallet.name}
                             onClick={() => connect(wallet.name)}
                             className="w-full lg:max-w-[450px] group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                         >
-                            {/* hover overlay */}
                             <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                            {/* content */}
                             <div className="relative flex items-center justify-center space-x-3">
                                 <User className="w-5 h-5" />
 
@@ -80,13 +79,6 @@ const LeftHero = () => {
                         </button>
                     ))}
 
-                    {/* <button className='w-full lg:max-w-[450px] group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-700 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'>
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-rose-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div className="relative flex items-center justify-center space-x-3">
-                            <User className="w-5 h-5" />
-                            <span>Continue with Google</span>
-                        </div>
-                    </button> */}
 
                     <button onClick={() => setIsOpen(true)} className='w-full lg:max-w-[450px] group bg-white border-2 border-gray-200 text-gray-800 font-bold py-4 px-8 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 hover:border-red-300 hover:bg-gray-50'>
                         <div className="flex items-center justify-center space-x-3">
@@ -95,10 +87,10 @@ const LeftHero = () => {
                         </div>
                     </button>
 
-                </div>
+                </motion.div>
 
                 {/* Hero Items */}
-                <div className='space-y-6 w-full mt-10 md:mt-4'>
+                <motion.div variants={itemVariants} className='space-y-6 w-full mt-10 md:mt-4'>
                     {keyFeatures.map((feature, index) => {
                         const Icon = feature.icon
                         return (
@@ -145,13 +137,19 @@ const LeftHero = () => {
                             </div>
                         )
                     })}
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
 
             {/* Popup Modal */}
             {isOpen && !loading && (
-                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
-                    <div className='bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden'>
+                <motion.div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}>
+                    <motion.div className='bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden'
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}>
+
                         {/* Header */}
                         <div className="border-b border-gray-100 text-start px-6 pt-6 pb-3">
                             <div className="flex items-center justify-between">
@@ -172,32 +170,34 @@ const LeftHero = () => {
 
                         {/* Wallets */}
                         <div className='p-4 max-h-[300px] overflow-y-auto space-y-2 '>
-                            {wallets
-                                .filter((wallet) => wallet.name !== "Continue with Google")
-                                .map((wallet) => (
-                                    <button
-                                        key={wallet.name}
-                                        onClick={async () => {
-                                            setLoading(true);
-                                            try {
-                                                await connect(wallet.name);
-                                            } finally {
-                                                setLoading(false);
-                                                setIsOpen(false);
-                                            }
-                                        }}
-                                        className="w-full flex items-center px-4 py-3 rounded-xl border border-white hover:border-red-300 hover:bg-red-100 transition-colors"
-                                    >
-                                        <img
-                                            src={wallet.icon}
-                                            alt={wallet.name}
-                                            className="w-6 h-6 object-contain"
-                                        />
-                                        <span className="ml-3 font-medium text-gray-800">
-                                            {wallet.name}
-                                        </span>
-                                    </button>
-                                ))}
+                            {wallets.filter((wallet) => wallet.name !== "Continue with Google").map((wallet, index) => (
+                                <motion.button
+                                    key={wallet.name}
+                                    onClick={async () => {
+                                        setLoading(true);
+                                        try {
+                                            await connect(wallet.name);
+                                        } finally {
+                                            setLoading(false);
+                                            setIsOpen(false);
+                                        }
+                                    }}
+                                    className="w-full flex items-center px-4 py-3 rounded-xl border border-white hover:border-red-300 hover:bg-red-100 transition-colors"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1, duration: 0.3 }}
+                                    whileHover={{ x: 5 }}
+                                >
+                                    <img
+                                        src={wallet.icon}
+                                        alt={wallet.name}
+                                        className="w-6 h-6 object-contain"
+                                    />
+                                    <span className="ml-3 font-medium text-gray-800">
+                                        {wallet.name}
+                                    </span>
+                                </motion.button>
+                            ))}
                         </div>
 
                         {/* Footer */}
@@ -207,13 +207,12 @@ const LeftHero = () => {
                                 Learn More
                             </button>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             )}
 
-            {loading && (
-            <LoaderPopup />
-            )}
+            {loading && <LoaderPopup onClose={() => setLoading(false)} />}
+
 
         </div>
     )

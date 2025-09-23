@@ -85,21 +85,42 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
                 </div>
             </div>
 
-            <div className='flex justify-center gap-10 mt-10'>
-                <button onClick={() => setIsCustom(false)}>
-                    <p>apt</p>
-                </button>
-                <button onClick={() => setIsCustom(true)}>
-                    <p>custom</p>
-                </button>
+            <div className="flex justify-center mt-10">
+                <div className="relative flex gap-8 text-lg font-bold text-gray-600">
+                    <button
+                        onClick={() => setIsCustom(false)}
+                        className={`relative pb-1 transition-all ${!isCustom ? "text-red-600" : "hover:text-gray-900"
+                            }`}
+                    >
+                        APT
+                        <span
+                            className={`absolute left-0 -bottom-1 h-[2px] bg-red-600 transition-all duration-300 ${!isCustom ? "w-full" : "w-0"
+                                }`}
+                        />
+                    </button>
+
+                    <button
+                        onClick={() => setIsCustom(true)}
+                        className={`relative pb-1 transition-all ${isCustom ? "text-red-600" : "hover:text-gray-900"
+                            }`}
+                    >
+                        Custom
+                        <span
+                            className={`absolute left-0 -bottom-1 h-[2px] bg-red-600 transition-all duration-300 ${isCustom ? "w-full" : "w-0"
+                                }`}
+                        />
+                    </button>
+                </div>
             </div>
+
+
 
 
 
 
             {/* Conditional Rendering */}
             <div className="mt-10">
-                {batchOpen ? <Method1 balance={balance} isCustom={isCustom} /> : <Method2 balance={balance} isCustom={isCustom}/>}
+                {batchOpen ? <Method1 balance={balance} isCustom={isCustom} /> : <Method2 balance={balance} isCustom={isCustom} />}
             </div>
 
         </div>

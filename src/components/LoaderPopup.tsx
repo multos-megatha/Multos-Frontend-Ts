@@ -1,37 +1,62 @@
-'use client'
+"use client";
 
-import React from 'react'
+import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { X } from "lucide-react";
 
-const LoaderPopup = () => {
+type LoaderPopupProps = {
+  onClose: () => void;
+};
+
+const LoaderPopup: React.FC<LoaderPopupProps> = ({ onClose }) => {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="bg-white/95 w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] rounded-3xl shadow-2xl flex flex-col items-center justify-center space-y-4 border-4 border-rose-200 animate-bounce-in">
-        
-        {/* GIF */}
-        <div className="relative">
-          <img
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div
+          className="relative flex flex-col items-center p-8 bg-white/95 rounded-3xl shadow-2xl max-w-xs w-full"
+          initial={{ y: 50, opacity: 0, scale: 0.9 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 50, opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Tombol close */}
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition-colors"
+          >
+            <X size={22} />
+          </button>
+
+          {/* GIF loader */}
+          <motion.img
             src="./multosloading.gif"
-            alt="loading"
-            className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-lg animate-wiggle"
+            alt="Loading..."
+            className="w-28 h-28 object-contain drop-shadow-md"
+            initial={{ rotate: -10, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
           />
-          {/* Glow effect */}
-          <div className="absolute inset-0 rounded-full blur-xl sm:blur-2xl bg-rose-400/40 animate-pulse"></div>
-        </div>
 
-        {/* Text */}
-        <p className="text-gray-800 font-bold text-sm sm:text-base tracking-wide animate-pulse text-center">
-          Connecting Wallet...
-        </p>
+          {/* Teks */}
+          <motion.p
+            className="mt-5 text-gray-800 font-semibold text-lg tracking-wide"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            Please wait...
+          </motion.p>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 
-        {/* Cute dots animation */}
-        <div className="flex space-x-1.5 sm:space-x-2">
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-rose-500 rounded-full animate-bounce"></span>
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-400 rounded-full animate-bounce [animation-delay:200ms]"></span>
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-pink-400 rounded-full animate-bounce [animation-delay:400ms]"></span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default LoaderPopup
+export default LoaderPopup;

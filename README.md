@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+MULTOS
+An Aptos-based application that mirrors the functionality of a token dispersal service, similar to the Disperse app on the Ethereum blockchain. This project provides a simple and efficient way to send a single token to multiple addresses in one transaction on the Aptos network.
 
-## Getting Started
+Tech Stack
+This project is built using the following technologies:
 
-First, run the development server:
+Framework: Next.js with TypeScript (next@15.5.2, react@19.1.0, react-dom@19.1.0)
 
-```bash
+Aptos SDKs: The official Aptos TypeScript SDK (@aptos-labs/ts-sdk@3.1.3) and the Aptos wallet adapter for React (@aptos-labs/wallet-adapter-react@7.0.4).
+
+Styling: Tailwind CSS (tailwindcss@3.4.0) with autoprefixer@10.4.21 and postcss@8.5.6 for utility-first styling.
+
+UI Components: Utilizes framer-motion@12.23.18 for animations and lucide-react@0.543.0 for icons.
+
+Features
+Disperse APT & Custom Tokens: Send native APT or any other custom token on the Aptos network.
+
+Batch & Manual Dispersal: Choose between a manual, one-by-one input or a more efficient batch entry system.
+
+Connect Aptos Wallet: Seamlessly connect your wallet to manage and disperse your assets.
+
+Installation
+Follow these steps to get the project up and running on your local machine.
+
+Clone the repository
+
+git clone [your-repository-url]
+cd MULTOS
+
+
+
+Install dependencies
+
+npm install
+
+
+
+Run the development server
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application will be available at http://localhost:3000.
 
-## Learn More
+Usage
+Connect Wallet: On the homepage, click the "Connect Wallet" button and select your preferred Aptos wallet.
 
-To learn more about Next.js, take a look at the following resources:
+Input Details: Enter the token address, a list of recipient addresses, and the amount to be sent to each address.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Disperse Tokens: Click the "Disperse" button to initiate the transaction through your connected wallet. Review and confirm the transaction to disperse the tokens.

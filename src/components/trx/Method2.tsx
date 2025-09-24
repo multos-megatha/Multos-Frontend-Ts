@@ -51,8 +51,10 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     const [tokenSymbol, setTokenSymbol] = useState('');
     const [tokenAmount, setTokenAmount] = useState<number>(0);
     const [tokenDecimals, setTokenDecimals] = useState<number>(0);
+    const [error, setError] = useState(false); 
     const handleLoad = async () => {
         setLoading(true)
+        setError(false);
         try {
             const symbol = await getTokenSymbol(inputtedTokenAddr);
             const amount = await getTokenAmount(inputtedTokenAddr);
@@ -67,7 +69,9 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
             setIsLoaded(true);
 
         } catch (error) {
-            throw error
+            // throw error
+            console.error(error);
+            setError(true);
         }
         setLoading(false)
 
@@ -267,7 +271,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                             onClick={handleFinalConfirm}
                             disabled={isDisabled}
                             className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${!isDisabled
-                                ? "bg-red-600 text-white hover:bg-red-700"
+                                ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white hover:shadow-xl transition-all duration-200"
                                 : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
                                 }`}
                         >
@@ -344,7 +348,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                             disabled={!inputtedTokenAddr} // disable jika kosong
                             className={`px-5 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition
                                 ${inputtedTokenAddr
-                                    ? "bg-red-600 text-white hover:bg-red-700"
+                                    ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white hover:scale-105 transition-all duration-200"
                                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                                 }`}
                         >
@@ -353,19 +357,30 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                     </div>
 
                     <div className="text-sm text-gray-600">
-                        {loading ? (
-                            <motion.span
-                                key="loading"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ duration: 0.25, ease: "easeOut" }}
-                                className="font-semibold text-gray-900"
-                            >
-                                Loading, please wait...
-                            </motion.span>
-                        ) : isLoaded ? (
-                            <AnimatePresence mode="wait">
+                        <AnimatePresence mode="wait">
+                            {loading ? (
+                                <motion.span
+                                    key="loading"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.25, ease: "easeOut" }}
+                                    className="font-semibold text-gray-900"
+                                >
+                                    Loading, please wait...
+                                </motion.span>
+                            ) : error ? (
+                                <motion.span
+                                    key="error"
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 10 }}
+                                    transition={{ duration: 0.25, ease: "easeOut" }}
+                                    className="font-semibold text-red-600"
+                                >
+                                    Invalid token address
+                                </motion.span>
+                            ) : isLoaded ? (
                                 <motion.div
                                     key="loaded"
                                     initial={{ opacity: 0, scale: 0.95 }}
@@ -378,8 +393,8 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                                         {tokenAmount} {tokenSymbol}
                                     </span>
                                 </motion.div>
-                            </AnimatePresence>
-                        ) : null}
+                            ) : null}
+                        </AnimatePresence>
                     </div>
                 </div>
             )}
@@ -514,7 +529,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                     }
                     className={`flex-1 px-4 py-2 rounded-lg font-medium ${total > 0 &&
                         (isCustom ? remainingToken >= 0 : remainingAPT >= 0)
-                        ? "bg-red-600 text-white hover:bg-red-700"
+                        ? "bg-gradient-to-r from-rose-500 via-red-700 to-rose-900 text-white hover:shadow-xl transition-all duration-200"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                         }`}
                 >

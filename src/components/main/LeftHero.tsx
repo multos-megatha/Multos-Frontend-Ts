@@ -63,7 +63,7 @@ const LeftHero = () => {
 
 
                 <motion.div variants={itemVariants} className='flex flex-col items-center justify-center mt-6 md:mt-9 gap-3 w-full md:mb-9'>
-                    {wallets.filter((wallet) => wallet.name === "Continue with Google").map((wallet) => (
+                    {(wallets || []).filter((wallet) => wallet.name === "Continue with Google").map((wallet) => (
                         <button
                             key={wallet.name}
                             onClick={async () => {
@@ -178,7 +178,7 @@ const LeftHero = () => {
 
                         {/* Wallets */}
                         <div className='p-4 max-h-[300px] overflow-y-auto space-y-2 '>
-                            {wallets.filter((wallet) => wallet.name !== "Continue with Google").map((wallet, index) => (
+                            {(wallets || []).filter((wallet) => wallet.name !== "Continue with Google").map((wallet, index) => (
                                 <motion.button
                                     key={wallet.name}
                                     onClick={async () => {

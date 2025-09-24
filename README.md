@@ -1,51 +1,47 @@
-MULTOS
-An Aptos-based application that mirrors the functionality of a token dispersal service, similar to the Disperse app on the Ethereum blockchain. This project provides a simple and efficient way to send a single token to multiple addresses in one transaction on the Aptos network.
+<pre align="center">
+███╗   ███╗ ██╗   ██╗ ██╗    ███████████╗  ██████╗  ███████╗
+████╗ ████║ ██║   ██║ ██║     ╚══██╔════╝ ██╔═══██╗ ██╔════╝
+██╔████╔██║ ██║   ██║ ██║        ██║      ██║   ██║ ███████
+██║╚██╔╝██║ ██║   ██║ ██║        ██║      ██║   ██║ ╔══╝███
+██║ ╚═╝ ██║ ╚██████╔╝ ███████╗   ██║      ╚██████╔╝ ███████╗
+╚═╝     ╚═╝  ╚═════╝  ╚══════╝   ╚═╝       ╚═════╝  ╚══════╝
+</pre>
 
-Tech Stack
-This project is built using the following technologies:
+An Aptos-based application that provides a simple and efficient way to send a single token to multiple addresses in one transaction on the Aptos network. 
 
-Framework: Next.js with TypeScript (next@15.5.2, react@19.1.0, react-dom@19.1.0)
+## 🛠️ Tech Stack
 
-Aptos SDKs: The official Aptos TypeScript SDK (@aptos-labs/ts-sdk@3.1.3) and the Aptos wallet adapter for React (@aptos-labs/wallet-adapter-react@7.0.4).
+| Category | Technology | Version |
+|----------|------------|---------|
+| **Framework** | Next.js with TypeScript | `next@15.5.2` |
+| **React DOM** | React DOM | `react-dom@19.1.0` |
+| **Aptos SDK** | Aptos TypeScript SDK | `@aptos-labs/ts-sdk@3.1.3` |
+| **Wallet Adapter** | Aptos Wallet Adapter React | `@aptos-labs/wallet-adapter-react@7.0.4` |
+| **Styling** | Tailwind CSS | `tailwindcss@3.4.0` |
+| **Animations** | Framer Motion | `framer-motion@12.23.18` |
+| **Icons** | Lucide React | `lucide-react@0.543.0` |
 
-Styling: Tailwind CSS (tailwindcss@3.4.0) with autoprefixer@10.4.21 and postcss@8.5.6 for utility-first styling.
+# ✨ Features
 
-UI Components: Utilizes framer-motion@12.23.18 for animations and lucide-react@0.543.0 for icons.
+* **💎 Disperse APT & Custom Tokens**: Send native APT or any other custom token on the Aptos network
+* **⚡ Batch & Manual Dispersal**: Choose between a manual, one-by-one input or a more efficient batch entry system
+* **🔗 Connect Aptos Wallet**: Seamlessly connect your wallet to manage and disperse your assets
 
-Features
-Disperse APT & Custom Tokens: Send native APT or any other custom token on the Aptos network.
+## ❌ The Problem We Solve
 
-Batch & Manual Dispersal: Choose between a manual, one-by-one input or a more efficient batch entry system.
+* **⏰ Inefficiency of manual token transfers**: The current method of sending tokens to multiple people is slow and tedious, requiring a separate transaction for each recipient
+* **💸 High transaction fees**: A separate transaction for each recipient means you pay gas fees multiple times, which can add up quickly
 
-Connect Aptos Wallet: Seamlessly connect your wallet to manage and disperse your assets.
+### 💡 How MULTOS Solves It
 
-Installation
-Follow these steps to get the project up and running on your local machine.
+* **🎯 Batch Dispersal**: MULTOS allows you to send tokens to hundreds of addresses in a single, efficient transaction, saving time and effort
+* **💰 Cost-Effective**: By bundling multiple transfers into one transaction, you pay significantly less in gas fees
 
-Clone the repository
+## 📦 Installation
 
-git clone [your-repository-url]
-cd MULTOS
-
-
-
-Install dependencies
-
-npm install
-
-
-
-Run the development server
-
+```bash
+git clone https://github.com/multos-megatha/Multos-Frontend-Ts.git
+cd Multos-Frontend-Ts
+npm i
 npm run dev
-
-
-
-The application will be available at http://localhost:3000.
-
-Usage
-Connect Wallet: On the homepage, click the "Connect Wallet" button and select your preferred Aptos wallet.
-
-Input Details: Enter the token address, a list of recipient addresses, and the amount to be sent to each address.
-
-Disperse Tokens: Click the "Disperse" button to initiate the transaction through your connected wallet. Review and confirm the transaction to disperse the tokens.
+```

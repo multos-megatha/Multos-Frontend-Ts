@@ -4,6 +4,7 @@ import React from 'react'
 import { useWallet } from '@aptos-labs/wallet-adapter-react'
 import { motion, Variants } from 'framer-motion'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 const Footer = () => {
   const { connected } = useWallet()
@@ -57,21 +58,45 @@ const Footer = () => {
 
           {/* Social Icons */}
           <div className="flex flex-row items-center space-x-4">
-            <motion.img
-              src="/twitter.svg"
-              alt="Twitter"
-              className="h-10 rounded-full object-cover cursor-pointer"
-              whileHover={{ scale: 1.15, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-            />
-            <motion.img
-              src="/github.svg"
-              alt="GitHub"
-              className="h-11 cursor-pointer rounded-full"
-              whileHover={{ scale: 1.15, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-            />
+            {/* Twitter */}
+            <a href="https://x.com/megathatech" target="_blank" rel="noopener noreferrer">
+              <motion.div
+                whileHover={{ scale: 1.15, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="/twitter.svg"
+                  alt="Twitter"
+                  width={40}
+                  height={40}
+                  className="rounded-full object-cover"
+                />
+              </motion.div>
+            </a>
+
+            {/* GitHub */}
+            <a
+              href="https://github.com/multos-megatha"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <motion.div
+                whileHover={{ scale: 1.15, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="cursor-pointer"
+              >
+                <Image
+                  src="/github.svg"
+                  alt="GitHub"
+                  width={44}
+                  height={44}
+                  className="rounded-full"
+                />
+              </motion.div>
+            </a>
           </div>
+
         </div>
       </motion.div>
     </motion.section>

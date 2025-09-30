@@ -211,6 +211,7 @@ const FeatureSection: React.FC = () => {
                         </motion.div>
                         
                         <motion.span
+                          className="text-sm sm:text-base md:text-lg"
                             animate={isClicked ? { 
                                 scale: [1, 0.9, 1.1, 1],
                                 rotate: [0, -2, 2, 0]

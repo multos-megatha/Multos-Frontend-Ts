@@ -45,6 +45,8 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     const handleBack = () => {
         setShowConfirmation(false);
         setTransactionHash(null);
+        setErrorMessage(null);
+
     };
 
     const [inputtedTokenAddr, setInputtedTokenAddr] = useState('');
@@ -78,8 +80,11 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     }
 
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    
     const handleFinalConfirm = async () => {
         setLoading(true);
+        setErrorMessage(null);
         // konversi semua amount ke Octa (1 APT = 1e8 Octa)
         const conversion = isCustom ? 10 ** tokenDecimals : 1e8;
         const payload = transfers.map(t => ({
@@ -95,26 +100,26 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
             recipients.push(payload[i].address);
         }
 
-        if (isCustom) {
-            try {
+        try {
+            if (isCustom) {
                 const txnResult = await disperseCustomToken(inputtedTokenAddr, amounts, recipients);
-                setTransactionHash(txnResult as string)
-            } catch (error) {
-                console.error("transaction error", error)
-            }
-        } else {
-            try {
+                setTransactionHash(txnResult as string);
+            } else {
                 const txnResult = await disperseAPT(amounts, recipients);
                 setTransactionHash(txnResult as string);
-            } catch (error) {
-                console.error("transaction error: ", error);
             }
+        } catch (error: any) {
+            console.error("transaction failed: ", error);
+
+            // Kalau error ada pesan invalid address
+            if (error?.message?.toLowerCase().includes("invalid address")) {
+                setErrorMessage("❌ Invalid address. Please check recipient wallet address.");
+            } else {
+                setErrorMessage("❌ Transaction failed. Please try again.");
+            }
+        } finally {
+            setLoading(false);
         }
-        // reset state
-        // setShowConfirmation(false);
-        // setTransfers([]);
-        // setTextareaValue('');
-        setLoading(false);
 
     };
 
@@ -285,7 +290,29 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                         )}
                     </div>
 
-
+                    {errorMessage && (
+                                            <AnimatePresence>
+                                                <motion.div
+                                                    key="tx-error"
+                                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                                    className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200 shadow-sm"
+                                                >
+                                                    <h3 className="text-sm font-medium text-red-800 mb-2">
+                                                        Transaction Failed
+                                                    </h3>
+                    
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
+                                                            {errorMessage || "Something went wrong"}
+                                                        </span>
+                                                    </div>
+                                                </motion.div>
+                                            </AnimatePresence>
+                                        )}
+                    
 
                     {transactionHash && (
                         <AnimatePresence>

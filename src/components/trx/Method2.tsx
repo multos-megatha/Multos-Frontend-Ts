@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDisperseAPT, useDisperseCustomToken, fetchToken } from '@/utils/HandleWeb3';
 import LoaderPopup from '../LoaderPopup';
 import { motion, AnimatePresence } from "framer-motion";
+import PopupHash from '../PopupHash';
 
 interface TransferItem {
     id: string;
@@ -53,7 +54,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
     const [tokenSymbol, setTokenSymbol] = useState('');
     const [tokenAmount, setTokenAmount] = useState<number>(0);
     const [tokenDecimals, setTokenDecimals] = useState<number>(0);
-    const [error, setError] = useState(false); 
+    const [error, setError] = useState(false);
     const handleLoad = async () => {
         setLoading(true)
         setError(false);
@@ -81,7 +82,7 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
 
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    
+
     const handleFinalConfirm = async () => {
         setLoading(true);
         setErrorMessage(null);
@@ -113,9 +114,9 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
 
             // Kalau error ada pesan invalid address
             if (error?.message?.toLowerCase().includes("invalid address")) {
-                setErrorMessage("❌ Invalid address. Please check recipient wallet address.");
+                setErrorMessage("Invalid address. Please check recipient wallet address.");
             } else {
-                setErrorMessage("❌ Transaction failed. Please try again.");
+                setErrorMessage("Invalid address. Please check recipient wallet address.");
             }
         } finally {
             setLoading(false);
@@ -291,63 +292,39 @@ const Method2: React.FC<Method2Props> = ({ balance, isCustom }) => {
                     </div>
 
                     {errorMessage && (
-                                            <AnimatePresence>
-                                                <motion.div
-                                                    key="tx-error"
-                                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                                    transition={{ duration: 0.3, ease: "easeOut" }}
-                                                    className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200 shadow-sm"
-                                                >
-                                                    <h3 className="text-sm font-medium text-red-800 mb-2">
-                                                        Transaction Failed
-                                                    </h3>
-                    
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
-                                                            {errorMessage || "Something went wrong"}
-                                                        </span>
-                                                    </div>
-                                                </motion.div>
-                                            </AnimatePresence>
-                                        )}
-                    
-
-                    {transactionHash && (
                         <AnimatePresence>
                             <motion.div
-                                key="tx-success"
+                                key="tx-error"
                                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                                 transition={{ duration: 0.3, ease: "easeOut" }}
-                                className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200 shadow-sm"
+                                className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200 shadow-sm"
                             >
-                                <h3 className="text-sm font-medium text-green-800 mb-2">
-                                    Transaction Successful
+                                <h3 className="text-sm font-medium text-red-800 mb-2">
+                                    Transaction Failed
                                 </h3>
 
                                 <div className="flex items-center justify-between">
-                                    {/* Hash dengan truncate */}
-                                    <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
-                                        {transactionHash}
+                                    <span className="text-xs font-mono text-gray-700">
+                                        {errorMessage || "Something went wrong"}
                                     </span>
-
-                                    {/* Copy button */}
-                                    <button
-                                        onClick={() => navigator.clipboard.writeText(transactionHash)}
-                                        className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                                    >
-                                        Copy
-                                    </button>
                                 </div>
                             </motion.div>
                         </AnimatePresence>
                     )}
 
 
+
+
+
                 </div>
+                    {transactionHash && (
+                        <PopupHash
+                            transactionHash={transactionHash}
+                            onClose={() => setTransactionHash(null)}
+                        />
+                    )}
             </div>
         );
     }

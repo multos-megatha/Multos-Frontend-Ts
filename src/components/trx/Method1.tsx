@@ -3,6 +3,8 @@ import { Trash2, Plus } from 'lucide-react';
 import { useDisperseAPT, fetchToken, useDisperseCustomToken } from '@/utils/HandleWeb3';
 import LoaderPopup from '../LoaderPopup';
 import { motion, AnimatePresence } from "framer-motion";
+import { div } from 'framer-motion/client';
+import PopupHash from '../PopupHash';
 
 interface TransferItem {
     id: string;
@@ -21,6 +23,9 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
     const { disperseCustomToken } = useDisperseCustomToken()
     const [isLoaded, setIsLoaded] = useState(false);
     const [loading, setLoading] = useState(false)
+
+
+    
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -102,9 +107,9 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
             // Kalau error ada pesan invalid address
             if (error?.message?.toLowerCase().includes("invalid address")) {
-                setErrorMessage("❌ Invalid address. Please check recipient wallet address.");
+                setErrorMessage("Invalid address. Please check recipient wallet address.");
             } else {
-                setErrorMessage("❌ Transaction failed. Please try again.");
+                setErrorMessage("Invalid address. Please check recipient wallet address.");
             }
         } finally {
             setLoading(false);
@@ -164,9 +169,9 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
         (isCustom ? remainingToken < 0 : remainingAPT < 0) || !!transactionHash;
 
 
-
     if (showConfirmation) {
         const validTransfers = transfers.filter(t => t.address && t.amount > 0);
+
 
         return (
             <div className="max-w-2xl mx-auto py-4">
@@ -284,7 +289,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                                 </h3>
 
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
+                                    <span className="text-xs font-mono text-gray-700">
                                         {errorMessage || "Something went wrong"}
                                     </span>
                                 </div>
@@ -292,39 +297,14 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
                         </AnimatePresence>
                     )}
 
-                    {transactionHash && (
-                        <AnimatePresence>
-                            <motion.div
-                                key="tx-success"
-                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                transition={{ duration: 0.3, ease: "easeOut" }}
-                                className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200 shadow-sm"
-                            >
-                                <h3 className="text-sm font-medium text-green-800 mb-2">
-                                    Transaction Successful
-                                </h3>
-
-                                <div className="flex items-center justify-between">
-                                    {/* Hash dengan truncate */}
-                                    <span className="text-xs font-mono text-gray-700 truncate max-w-[80%]">
-                                        {transactionHash}
-                                    </span>
-
-                                    {/* Copy button */}
-                                    <button
-                                        onClick={() => navigator.clipboard.writeText(transactionHash)}
-                                        className="ml-2 text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                                    >
-                                        Copy
-                                    </button>
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
-                    )}
 
                 </div>
+                    {transactionHash && (
+                        <PopupHash
+                            transactionHash={transactionHash}
+                            onClose={() => setTransactionHash(null)}
+                        />
+                    )}
 
                 {loading && (
                     <LoaderPopup

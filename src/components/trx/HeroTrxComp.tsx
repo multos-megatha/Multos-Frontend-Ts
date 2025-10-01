@@ -78,7 +78,7 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
                                     : "text-gray-600 hover:text-gray-800"
                             )}
                         >
-                            Manual
+                            Batch
                         </button>
 
                         {/* Batch Button */}
@@ -91,7 +91,7 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
                                     : "text-gray-600 hover:text-gray-800"
                             )}
                         >
-                            Batch
+                            Manual
                         </button>
                     </div>
                 </motion.div>
@@ -133,7 +133,7 @@ const HeroTrxComp: React.FC<BalanceProps> = ({ balance }) => {
 
             {/* Conditional Rendering */}
             <motion.div variants={itemVariants} className="mt-10">
-                {batchOpen ? <Method1 balance={balance} isCustom={isCustom} /> : <Method2 balance={balance} isCustom={isCustom} />}
+                {batchOpen ? <Method2 balance={balance} isCustom={isCustom} /> : <Method1 balance={balance} isCustom={isCustom} />}
             </motion.div>
 
         </motion.div>

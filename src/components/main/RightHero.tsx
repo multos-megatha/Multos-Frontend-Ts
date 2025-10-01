@@ -23,6 +23,8 @@ const RightHero = () => {
                         <motion.div variants={itemVariants}>
                             <VideoCard
                                 title="Multos Go Go!"
+                                href="https://www.youtube.com/watch?v=ukKH3LieLEM"
+
                                 subtitle="See what's Multos all about"
                                 thumbnail={
                                     <img
@@ -37,6 +39,7 @@ const RightHero = () => {
                             <VideoCard
                                 title="Multos Go Go!"
                                 subtitle="See what's Multos all about"
+                                href="https://www.youtube.com/watch?v=ukKH3LieLEM"
                                 thumbnail={
                                     <img
                                         src="./thumbnail.png"

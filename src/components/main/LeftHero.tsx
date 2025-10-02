@@ -161,195 +161,199 @@ const LeftHero = () => {
 
             {/* Popup Modal */}
             {isOpen && !loading && (
-    <motion.div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        onClick={() => setIsOpen(false)}
-    >
-        <motion.div
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-red-50"
-            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 30 }}
-            transition={{ 
-                type: "spring",
-                stiffness: 300,
-                damping: 30
-            }}
-            onClick={(e) => e.stopPropagation()}
-        >
-            {/* Header with gradient accent */}
-            <div className="relative border-b border-gray-100 px-6 pt-6 pb-4 bg-gradient-to-br from-white to-red-50/30">
-                <div className="flex items-center justify-between mb-3">
-                    <motion.h2 
-                        className="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        Connect Wallet
-                    </motion.h2>
-                    <motion.button
-                        onClick={() => setIsOpen(false)}
-                        className="p-2 hover:bg-red-50 rounded-full transition-colors text-gray-500 hover:text-red-600"
-                        whileHover={{ scale: 1.1, rotate: 90 }}
-                        whileTap={{ scale: 0.9 }}
-                        initial={{ opacity: 0, rotate: -90 }}
-                        animate={{ opacity: 1, rotate: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        <X className="w-5 h-5" />
-                    </motion.button>
-                </div>
-                
-                <motion.div 
-                    className="flex items-center gap-2"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 }}
+                <motion.div
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => setIsOpen(false)}
                 >
-                    <div className="w-1.5 h-1.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-full"></div>
-                    <h3 className="text-sm font-semibold text-gray-600 tracking-wide uppercase">
-                        Popular Wallets
-                    </h3>
-                </motion.div>
-
-                {/* Decorative gradient line */}
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-red-300 to-transparent opacity-50"></div>
-            </div>
-
-            {/* Wallets Grid */}
-            <div className="p-5 max-h-[380px] overflow-y-auto">
-                <div className="space-y-3">
-                    {ALL_WALLETS.map((wallet, index) => {
-                        const isInstalled = wallets.some((w) => w.name === wallet.name);
-
-                        return (
-                            <motion.div
-                                key={wallet.name}
-                                className="group relative"
-                                initial={{ opacity: 0, x: -30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ 
-                                    delay: index * 0.08,
-                                    duration: 0.4,
-                                    ease: "easeOut"
-                                }}
-                            >
-                                <div className="relative w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-red-300 hover:bg-gradient-to-r hover:from-red-50/50 hover:to-rose-50/30 transition-all duration-300 shadow-sm hover:shadow-md">
-                                    {/* Hover accent line */}
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-500 to-rose-500 rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                                    {/* Left: Icon + Name */}
-                                    <div className="flex items-center gap-4">
-                                        <motion.div 
-                                            className="relative"
-                                            whileHover={{ scale: 1.1, rotate: 5 }}
-                                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                                        >
-                                            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center border border-gray-200 group-hover:border-red-200 transition-colors">
-                                                <img
-                                                    src={wallet.icon}
-                                                    alt={wallet.name}
-                                                    className="w-7 h-7 object-contain"
-                                                />
-                                            </div>
-                                            
-                                            {/* Installed badge */}
-                                            {isInstalled && (
-                                                <motion.div
-                                                    className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full border-2 border-white"
-                                                    initial={{ scale: 0 }}
-                                                    animate={{ scale: 1 }}
-                                                    transition={{ delay: index * 0.08 + 0.3, type: "spring", stiffness: 500 }}
-                                                />
-                                            )}
-                                        </motion.div>
-                                        
-                                        <div>
-                                            <span className="font-semibold text-gray-800 text-base">
-                                                {wallet.name}
-                                            </span>
-                                            {isInstalled && (
-                                                <motion.p 
-                                                    className="text-xs text-green-600 font-medium"
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{ delay: index * 0.08 + 0.2 }}
-                                                >
-                                                    Installed
-                                                </motion.p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Right: Action Button */}
-                                    {isInstalled ? (
-                                        <motion.button
-                                            onClick={async () => {
-                                                setLoading(true);
-                                                try {
-                                                    await connect(wallet.name);
-                                                } finally {
-                                                    setLoading(false);
-                                                    setIsOpen(false);
-                                                }
-                                            }}
-                                            className="flex items-center gap-1.5 text-sm px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            Connect
-                                        </motion.button>
-                                    ) : wallet.installUrl ? (
-                                        <motion.a
-                                            href={wallet.installUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-1.5 text-sm px-5 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all duration-200 border border-gray-300"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            Install
-                                        </motion.a>
-                                    ) : null}
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {/* Footer */}
-            <motion.div 
-                className="border-t border-gray-200 px-6 py-5 bg-gradient-to-br from-gray-50 to-red-50/20"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-            >
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-1 h-1 bg-red-400 rounded-full"></div>
-                        <span className="text-sm text-gray-600">New to Aptos?</span>
-                    </div>
-                    <motion.button
-                        className="flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
-                        whileHover={{ x: 3 }}
+                    <motion.div
+                        className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-red-50"
+                        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 30 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 30
+                        }}
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        Learn More
-                    </motion.button>
-                </div>
-            </motion.div>
+                        {/* Header with gradient accent */}
+                        <div className="relative border-b border-gray-100 px-6 pt-6 pb-4 bg-gradient-to-br from-white to-red-50/30">
+                            <div className="flex items-center justify-between mb-3">
+                                <motion.h2
+                                    className="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                >
+                                    Connect Wallet
+                                </motion.h2>
+                                <motion.button
+                                    onClick={() => setIsOpen(false)}
+                                    className="p-2 hover:bg-red-50 rounded-full transition-colors text-gray-500 hover:text-red-600"
+                                    whileHover={{ scale: 1.1, rotate: 90 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    initial={{ opacity: 0, rotate: -90 }}
+                                    animate={{ opacity: 1, rotate: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                >
+                                    <X className="w-5 h-5" />
+                                </motion.button>
+                            </div>
 
-            {/* Decorative corner dots */}
-            <div className="absolute top-4 right-16 w-1.5 h-1.5 bg-red-300 rounded-full opacity-40"></div>
-            <div className="absolute bottom-6 left-6 w-1 h-1 bg-rose-300 rounded-full opacity-30"></div>
-        </motion.div>
-    </motion.div>
-)}
+                            <motion.div
+                                className="flex items-center gap-2"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.15 }}
+                            >
+                                <div className="w-1.5 h-1.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-full"></div>
+                                <h3 className="text-sm font-semibold text-gray-600 tracking-wide uppercase">
+                                    Popular Wallets
+                                </h3>
+                            </motion.div>
+
+                            {/* Decorative gradient line */}
+                            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-red-300 to-transparent opacity-50"></div>
+                        </div>
+
+                        {/* Wallets Grid */}
+                        <div className="p-5 max-h-[380px] overflow-y-auto">
+                            <div className="space-y-3">
+                                {ALL_WALLETS.map((wallet, index) => {
+                                    const isInstalled = wallets.some((w) => w.name === wallet.name);
+
+                                    return (
+                                        <motion.div
+                                            key={wallet.name}
+                                            className="group relative"
+                                            initial={{ opacity: 0, x: -30 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{
+                                                delay: index * 0.08,
+                                                duration: 0.4,
+                                                ease: "easeOut"
+                                            }}
+                                        >
+                                            <div className="relative w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-red-300 hover:bg-gradient-to-r hover:from-red-50/50 hover:to-rose-50/30 transition-all duration-300 shadow-sm hover:shadow-md">
+                                                {/* Hover accent line */}
+                                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-500 to-rose-500 rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                                                {/* Left: Icon + Name */}
+                                                <div className="flex items-center gap-4">
+                                                    <motion.div
+                                                        className="relative"
+                                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                                        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                                                    >
+                                                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center border border-gray-200 group-hover:border-red-200 transition-colors">
+                                                            <img
+                                                                src={wallet.icon}
+                                                                alt={wallet.name}
+                                                                className="w-7 h-7 object-contain"
+                                                            />
+                                                        </div>
+
+                                                        {/* Installed badge */}
+                                                        {isInstalled && (
+                                                            <motion.div
+                                                                className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full border-2 border-white"
+                                                                initial={{ scale: 0 }}
+                                                                animate={{ scale: 1 }}
+                                                                transition={{ delay: index * 0.08 + 0.3, type: "spring", stiffness: 500 }}
+                                                            />
+                                                        )}
+                                                    </motion.div>
+
+                                                    <div>
+                                                        <span className="font-semibold text-gray-800 text-base">
+                                                            {wallet.name}
+                                                        </span>
+                                                        {isInstalled && (
+                                                            <motion.p
+                                                                className="text-xs text-green-600 font-medium"
+                                                                initial={{ opacity: 0 }}
+                                                                animate={{ opacity: 1 }}
+                                                                transition={{ delay: index * 0.08 + 0.2 }}
+                                                            >
+                                                                Installed
+                                                            </motion.p>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Right: Action Button */}
+                                                {isInstalled ? (
+                                                    <motion.button
+                                                        onClick={async () => {
+                                                            setLoading(true);
+                                                            try {
+                                                                await connect(wallet.name);
+                                                            } finally {
+                                                                setLoading(false);
+                                                                setIsOpen(false);
+                                                            }
+                                                        }}
+                                                        className="flex items-center gap-1.5 text-sm px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        Connect
+                                                    </motion.button>
+                                                ) : wallet.installUrl ? (
+                                                    <motion.a
+                                                        href={wallet.installUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-1.5 text-sm px-5 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all duration-200 border border-gray-300"
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                    >
+                                                        Install
+                                                    </motion.a>
+                                                ) : null}
+                                            </div>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <motion.div
+                            className="border-t border-gray-200 px-6 py-5 bg-gradient-to-br from-gray-50 to-red-50/20"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-1 h-1 bg-red-400 rounded-full"></div>
+                                    <span className="text-sm text-gray-600">New to Aptos?</span>
+                                </div>
+                                <motion.a
+                                    href="https://aptosfoundation.org/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
+                                    whileHover={{ x: 3 }}
+                                >
+                                    Learn More
+                                </motion.a>
+
+                            </div>
+                        </motion.div>
+
+                        {/* Decorative corner dots */}
+                        <div className="absolute top-4 right-16 w-1.5 h-1.5 bg-red-300 rounded-full opacity-40"></div>
+                        <div className="absolute bottom-6 left-6 w-1 h-1 bg-rose-300 rounded-full opacity-30"></div>
+                    </motion.div>
+                </motion.div>
+            )}
 
 
             {loading && <LoaderPopup onClose={() => setLoading(false)} message='Connecting Wallet...' />}

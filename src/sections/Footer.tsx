@@ -47,14 +47,16 @@ const Footer = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="flex flex-row items-center justify-between px-6 py-4">
-          {/* Logo */}
-          <motion.img
-            src="/aptos.svg"
-            alt="Aptos Logo"
-            className="h-9 cursor-pointer"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          />
+          <a href="https://aptosfoundation.org/" target='blank'>
+            {/* Logo */}
+            <motion.img
+              src="/aptos.svg"
+              alt="Aptos Logo"
+              className="h-9 cursor-pointer"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            />
+          </a>
 
           {/* Social Icons */}
           <div className="flex flex-row items-center space-x-4">

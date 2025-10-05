@@ -25,7 +25,7 @@ export const useDisperseAPT = () => {
         const transaction = await aptos.transaction.build.simple({
             sender: account.address,
             data: {
-                function: "0x2d1c7d123fd0503aed57e1d6c62db2ed71130b8e212d333cfebadcf4135637ea::MULTOS_V3::disperseAptos",
+                function: "0x2d1c7d123fd0503aed57e1d6c62db2ed71130b8e212d333cfebadcf4135637ea::MULTOS_V4::disperseAptos",
                 functionArguments: [recipients, amounts]
             }
         })
@@ -34,7 +34,7 @@ export const useDisperseAPT = () => {
         const commitedTxn = await signAndSubmitTransaction({
             sender: account.address,
             data: {
-                function: "0x2d1c7d123fd0503aed57e1d6c62db2ed71130b8e212d333cfebadcf4135637ea::MULTOS_V3::disperseAptos",
+                function: "0x2d1c7d123fd0503aed57e1d6c62db2ed71130b8e212d333cfebadcf4135637ea::MULTOS_V4::disperseAptos",
                 functionArguments: [recipients, amounts]
             }
         })
@@ -133,7 +133,7 @@ export const useDisperseCustomToken = () => {
         const comittedTxn = await signAndSubmitTransaction({
             sender: account.address,
             data: {
-                function: "0x2d1c7d123fd0503aed57e1d6c62db2ed71130b8e212d333cfebadcf4135637ea::MULTOS_V3::disperseCustomToken",
+                function: "0x2d1c7d123fd0503aed57e1d6c62db2ed71130b8e212d333cfebadcf4135637ea::MULTOS_V4::disperseCustomToken",
                 functionArguments: [tokenAddress, recipients, amounts]
             }
         })

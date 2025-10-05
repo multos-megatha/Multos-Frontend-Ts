@@ -182,7 +182,7 @@ const LeftHero = () => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header with gradient accent */}
-                        <div className="relative border-b border-gray-100 px-6 pt-6 pb-4 bg-gradient-to-br from-white to-red-50/30">
+                        <div className="relative border-b border-gray-100 px-6 pt-6 pb-4 bg-gradient-to-br from-white to-red-50/30 ">
                             <div className="flex items-center justify-between mb-3">
                                 <motion.h2
                                     className="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent"
@@ -239,7 +239,7 @@ const LeftHero = () => {
                                                 ease: "easeOut"
                                             }}
                                         >
-                                            <div className="relative w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-red-300 hover:bg-gradient-to-r hover:from-red-50/50 hover:to-rose-50/30 transition-all duration-300 shadow-sm hover:shadow-md">
+                                            <div className="relative w-full flex items-center justify-between px-5 py-4 rounded-2xl border-2 border-gray-200 bg-white hover:border-red-300 hover:bg-gradient-to-r hover:from-red-50/50 hover:to-rose-50/30 transition-all duration-300 shadow-sm hover:shadow-md overflow-hidden">
                                                 {/* Hover accent line */}
                                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-red-500 to-rose-500 rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 

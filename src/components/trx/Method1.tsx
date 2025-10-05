@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Trash2, Plus } from 'lucide-react';
 import { useDisperseAPT, fetchToken, useDisperseCustomToken } from '@/utils/HandleWeb3';
 import LoaderPopup from '../LoaderPopup';
@@ -25,7 +25,7 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
     const [loading, setLoading] = useState(false)
 
 
-    
+
 
     const [transfers, setTransfers] = useState<TransferItem[]>([
         { id: '1', address: '', amount: 0 }
@@ -165,8 +165,9 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
         return num.toFixed(decimals).replace(/\.?0+$/, ""); // hapus trailing zero
     };
 
-    const isDisabled =
-        (isCustom ? remainingToken < 0 : remainingAPT < 0) || !!transactionHash;
+    const isDisabled = (isCustom ? remainingToken < 0 : remainingAPT < 0) || !!transactionHash;
+
+
 
 
     if (showConfirmation) {
@@ -299,12 +300,12 @@ const Method1: React.FC<Method1Props> = ({ balance, isCustom }) => {
 
 
                 </div>
-                    {transactionHash && (
-                        <PopupHash
-                            transactionHash={transactionHash}
-                            onClose={() => setTransactionHash(null)}
-                        />
-                    )}
+                {transactionHash && (
+                    <PopupHash
+                        transactionHash={transactionHash}
+                        onClose={() => setTransactionHash(null)}
+                    />
+                )}
 
                 {loading && (
                     <LoaderPopup
